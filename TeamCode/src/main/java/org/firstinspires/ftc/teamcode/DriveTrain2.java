@@ -14,30 +14,31 @@ public class DriveTrain2 extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
+    private DcMotor LeftFrontMotor = null;
+    private DcMotor LeftBackMotor = null;
+    private DcMotor RightFrontMotor = null;
+    private DcMotor RightBackMotor = null;
     private DcMotor LinearSlide = null;
-    private DcMotor leftFrontDrive = null;
-    private DcMotor leftBackDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private Servo   RightClaw = null;
-    private Servo   LeftClaw = null;
-    private DcMotor rightBackDrive = null;
+    private Servo LeftClaw = null;
+    private Servo RightClaw = null;
 
     @Override
     public void runOpMode() {
 
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "LeftFrontMotor"); //0
-        leftBackDrive = hardwareMap.get(DcMotor.class, "LeftBackMotor"); //2
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "RightFrontMotor");//1
-        rightBackDrive = hardwareMap.get(DcMotor.class, "RightBackMotor");//3
         LinearSlide = hardwareMap.get(DcMotor.class, "LinearSlideMotor");
-        RightClaw = hardwareMap.get(Servo.class, "RightClaw");
-        LeftClaw = hardwareMap.get(Servo.class, "LeftClaw");
+        LeftClaw = hardwareMap.get(Servo.class, "LeftClaw Servo");
+        RightClaw = hardwareMap.get(Servo.class, "RightClaw Servo");
+        LeftFrontMotor = hardwareMap.get(DcMotor.class, "LeftFrontMotor");
+        LeftBackMotor = hardwareMap.get(DcMotor.class, "LeftBackMotor");
+        RightFrontMotor = hardwareMap.get(DcMotor.class, "RightFrontMotor");
+        RightBackMotor = hardwareMap.get(DcMotor.class, "RightBackMotor");
 
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        LeftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
+        LeftBackMotor.setDirection(DcMotor.Direction.REVERSE);
+        RightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
+        RightBackMotor.setDirection(DcMotor.Direction.FORWARD);
         LinearSlide.setDirection(DcMotor.Direction.REVERSE);
+        LinearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -48,22 +49,36 @@ public class DriveTrain2 extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
             boolean finger = false;
+            int position = LinearSlide.getCurrentPosition();
 
-            if (gamepad1.right_bumper)
-                LinearSlide.setPower(0.3);
-            else if (gamepad1.left_bumper)
-                LinearSlide.setPower(-0.3);
-            else
+            if (gamepad1.right_bumper) {
+                telemetry.addData("GP1 Input", "Right Bumper");
+                telemetry.addData("Encoder Position", position);
+                LinearSlide.setPower(0.4);
+
+            }
+            else if (gamepad1.left_bumper) {
+                telemetry.addData("GP1 Input", "Left Bumper");
+                telemetry.addData("Encoder Position", position);
+                LinearSlide.setPower(-0.4);
+            }
+            else {
+                telemetry.addData("GP1 Input", "Not Input");
+                telemetry.addData("Encoder Position", position);
                 LinearSlide.setPower(0);
 
-            if(gamepad1.a)
+            }
+            if(gamepad1.a) {
+                telemetry.addData("GP2 Input", "Button A");
+                LeftClaw.setPosition(0);
+                RightClaw.setPosition(0);
+            }
+            else if(gamepad1.b) {
+                telemetry.addData("GP2 Input", "Button B");
                 LeftClaw.setPosition(0.5);
                 RightClaw.setPosition(0.5);
-
-
-
+            }
 
 
             double max;
@@ -94,15 +109,15 @@ public class DriveTrain2 extends LinearOpMode {
             }
 
             // Send calculated power to wheels
-            leftFrontDrive.setPower(leftFrontPower);
-            rightFrontDrive.setPower(rightFrontPower);
-            leftBackDrive.setPower(leftBackPower);
-            rightBackDrive.setPower(rightBackPower);
+            LeftFrontMotor.setPower(leftFrontPower);
+            RightFrontMotor.setPower(rightFrontPower);
+            LeftBackMotor.setPower(leftBackPower);
+            RightBackMotor.setPower(rightBackPower);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
             telemetry.update();
-        }
-    }}
+
+        }}}
