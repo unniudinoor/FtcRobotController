@@ -38,6 +38,8 @@ public class DriveTrain2 extends LinearOpMode {
         RightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         RightBackMotor.setDirection(DcMotor.Direction.FORWARD);
         LinearSlide.setDirection(DcMotor.Direction.REVERSE);
+        LeftClaw.setDirection(Servo.Direction.FORWARD);
+        RightClaw.setDirection(Servo.Direction.FORWARD);
         LinearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Wait for the game to start (driver presses PLAY)
@@ -74,7 +76,7 @@ public class DriveTrain2 extends LinearOpMode {
                 LeftClaw.setPosition(0);
                 RightClaw.setPosition(0);
             }
-            else if(gamepad1.b) {
+            else if (gamepad1.b){
                 telemetry.addData("GP2 Input", "Button B");
                 LeftClaw.setPosition(0.5);
                 RightClaw.setPosition(0.5);
