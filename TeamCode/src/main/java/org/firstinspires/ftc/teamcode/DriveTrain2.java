@@ -21,6 +21,8 @@ public class DriveTrain2 extends LinearOpMode {
     private DcMotor LinearSlide = null;
     private Servo LeftClaw = null;
     private Servo RightClaw = null;
+    static final double LeftClawClose_Position = 5/90;
+    static final double RightClawClose_Position = -5/90;
 
     @Override
     public void runOpMode() {
@@ -71,15 +73,19 @@ public class DriveTrain2 extends LinearOpMode {
                 LinearSlide.setPower(0);
 
             }
+            // leftclaw range is 0.75(open) to 0.5(closed)
+            // rightclaw range is 0.5(open) to 0.25(closed)
+            //leftclaw: 1 to 0
+            //right claw: 0 to 1
             if(gamepad1.a) {
                 telemetry.addData("GP2 Input", "Button A");
-                LeftClaw.setPosition(0);
-                RightClaw.setPosition(0);
+                LeftClaw.setPosition(.75);
+                RightClaw.setPosition(.25);
             }
             else if (gamepad1.b){
                 telemetry.addData("GP2 Input", "Button B");
-                LeftClaw.setPosition(0.5);
-                RightClaw.setPosition(0.5);
+                LeftClaw.setPosition(0.65);
+                RightClaw.setPosition(0.35);
             }
 
 
