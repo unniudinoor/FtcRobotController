@@ -21,8 +21,7 @@ public class DriveTrain2 extends LinearOpMode {
     private DcMotor LinearSlide = null;
     private Servo LeftClaw = null;
     private Servo RightClaw = null;
-    static final double LeftClawClose_Position = 5/90;
-    static final double RightClawClose_Position = -5/90;
+
 
     @Override
     public void runOpMode() {
@@ -51,38 +50,42 @@ public class DriveTrain2 extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        double linear_slide_speed = 0.4;
+
+        double left_claw_pos = 0.5; // left claw: 1 to 0
+        double right_claw_pos = 0.45; // right claw: 0 to 1
+
+        // expected final position
+        // left position: 0.33
+        // right position: 0.62
+        double diff_claw = 0.17;
+
+        double strafe_sens = 0.7;
+
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             boolean finger = false;
+
             int position = LinearSlide.getCurrentPosition();
 
             if (gamepad1.right_bumper) {
                 telemetry.addData("GP1 Input", "Right Bumper");
                 telemetry.addData("Encoder Position", position);
-                LinearSlide.setPower(0.4);
+                LinearSlide.setPower(linear_slide_speed);
 
             }
             else if (gamepad1.left_bumper) {
                 telemetry.addData("GP1 Input", "Left Bumper");
                 telemetry.addData("Encoder Position", position);
-                LinearSlide.setPower(-0.4);
+                LinearSlide.setPower(-linear_slide_speed);
             }
             else {
                 telemetry.addData("GP1 Input", "Not Input");
                 telemetry.addData("Encoder Position", position);
                 LinearSlide.setPower(0);
-
             }
 
-
-            double left_claw_pos = 0.5; // left claw: 1 to 0
-            double right_claw_pos = 0.45; // right claw: 0 to 1
-
-            // expected final position
-            // left position: 0.33
-            // right position: 0.62
-
-            double diff_claw = 0.17;
             if(gamepad1.a) {
                 telemetry.addData("GP2 Input", "Button A");
                 LeftClaw.setPosition(left_claw_pos);
@@ -93,7 +96,6 @@ public class DriveTrain2 extends LinearOpMode {
                 LeftClaw.setPosition(left_claw_pos - diff_claw);
                 RightClaw.setPosition(right_claw_pos + diff_claw);
             }
-
 
             double max;
 
@@ -123,10 +125,10 @@ public class DriveTrain2 extends LinearOpMode {
             }
 
             // Send calculated power to wheels
-            LeftFrontMotor.setPower(leftFrontPower);
-            RightFrontMotor.setPower(rightFrontPower);
-            LeftBackMotor.setPower(leftBackPower);
-            RightBackMotor.setPower(rightBackPower);
+            LeftFrontMotor.setPower(leftFrontPower * strafe_sens);
+            RightFrontMotor.setPower(rightFrontPower * strafe_sens);
+            LeftBackMotor.setPower(leftBackPower * strafe_sens);
+            RightBackMotor.setPower(rightBackPower * strafe_sens);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -134,4 +136,6 @@ public class DriveTrain2 extends LinearOpMode {
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
             telemetry.update();
 
-        }}}
+        }
+    }
+}
