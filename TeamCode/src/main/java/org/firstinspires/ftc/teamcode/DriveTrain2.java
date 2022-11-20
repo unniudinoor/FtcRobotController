@@ -73,19 +73,25 @@ public class DriveTrain2 extends LinearOpMode {
                 LinearSlide.setPower(0);
 
             }
-            // leftclaw range is 0.75(open) to 0.5(closed)
-            // rightclaw range is 0.5(open) to 0.25(closed)
-            //leftclaw: 1 to 0
-            //right claw: 0 to 1
+
+
+            double left_claw_pos = 0.5; // left claw: 1 to 0
+            double right_claw_pos = 0.45; // right claw: 0 to 1
+
+            // expected final position
+            // left position: 0.33
+            // right position: 0.62
+
+            double diff_claw = 0.17;
             if(gamepad1.a) {
                 telemetry.addData("GP2 Input", "Button A");
-                LeftClaw.setPosition(.75);
-                RightClaw.setPosition(.25);
+                LeftClaw.setPosition(left_claw_pos);
+                RightClaw.setPosition(right_claw_pos);
             }
             else if (gamepad1.b){
                 telemetry.addData("GP2 Input", "Button B");
-                LeftClaw.setPosition(0.65);
-                RightClaw.setPosition(0.35);
+                LeftClaw.setPosition(left_claw_pos - diff_claw);
+                RightClaw.setPosition(right_claw_pos + diff_claw);
             }
 
 
