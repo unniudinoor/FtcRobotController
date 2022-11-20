@@ -60,7 +60,7 @@ public class DriveTrain2 extends LinearOpMode {
         // right position: 0.62
         double diff_claw = 0.17;
 
-        double strafe_sens = 0.7;
+        double strafe_sens = 0.5;
 
 
         // run until the end of the match (driver presses STOP)
