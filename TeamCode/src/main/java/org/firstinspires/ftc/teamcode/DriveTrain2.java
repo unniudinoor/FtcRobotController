@@ -24,7 +24,7 @@ public class DriveTrain2 extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException{
 
         LinearSlide = hardwareMap.get(DcMotor.class, "LinearSlideMotor");
         LeftClaw = hardwareMap.get(Servo.class, "LeftClaw Servo");
@@ -41,7 +41,15 @@ public class DriveTrain2 extends LinearOpMode {
         LinearSlide.setDirection(DcMotor.Direction.REVERSE);
         LeftClaw.setDirection(Servo.Direction.FORWARD);
         RightClaw.setDirection(Servo.Direction.FORWARD);
-        LinearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        telemetry.addData("Encoder Position: before", LinearSlide.getCurrentPosition());
+
+        LinearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        telemetry.addData("Encoder Position: after", LinearSlide.getCurrentPosition());
+
+        LinearSlide.setTargetPosition(LinearSlide.getCurrentPosition() + 100);
+        LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -62,6 +70,12 @@ public class DriveTrain2 extends LinearOpMode {
 
         double strafe_sens = 0.5;
 
+        double linear_position = 0; // level of linear slide
+
+        int base_level = 0;
+        int lvl1_pole = 669;
+        int lvl2_pole = 1420;
+        int lvl3_pole = 2048;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -72,14 +86,37 @@ public class DriveTrain2 extends LinearOpMode {
             if (gamepad1.right_bumper) {
                 telemetry.addData("GP1 Input", "Right Bumper");
                 telemetry.addData("Encoder Position", position);
-                LinearSlide.setPower(linear_slide_speed);
-
+//                LinearSlide.setPower(linear_slide_speed);
+                if (linear_position < 3){
+                    linear_position += 1;
+                }
             }
             else if (gamepad1.left_bumper) {
                 telemetry.addData("GP1 Input", "Left Bumper");
                 telemetry.addData("Encoder Position", position);
-                LinearSlide.setPower(-linear_slide_speed);
+//                LinearSlide.setPower(-linear_slide_speed);
+                if (linear_position > 0){
+                    linear_position -= 1;
+                }
             }
+
+            if (linear_position == 0){
+                LinearSlide.setTargetPosition(base_level);
+                LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            else if (linear_position == 1){
+                LinearSlide.setTargetPosition(lvl1_pole);
+                LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            else if (linear_position == 2){
+                LinearSlide.setTargetPosition(lvl2_pole);
+                LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            else if (linear_position == 3){
+                LinearSlide.setTargetPosition(lvl3_pole);
+                LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
             else {
                 telemetry.addData("GP1 Input", "Not Input");
                 telemetry.addData("Encoder Position", position);
