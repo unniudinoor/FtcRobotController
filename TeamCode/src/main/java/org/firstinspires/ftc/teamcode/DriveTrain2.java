@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class DriveTrain2 extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
-    private ElapsedTime runtime = new ElapsedTime();
+    private final ElapsedTime runtime = new ElapsedTime();
     private DcMotor LeftFrontMotor = null;
     private DcMotor LeftBackMotor = null;
     private DcMotor RightFrontMotor = null;
@@ -42,14 +42,12 @@ public class DriveTrain2 extends LinearOpMode {
         LeftClaw.setDirection(Servo.Direction.FORWARD);
         RightClaw.setDirection(Servo.Direction.FORWARD);
 
-        telemetry.addData("Encoder Position: before", LinearSlide.getCurrentPosition());
-
         LinearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        telemetry.addData("Encoder Position: after", LinearSlide.getCurrentPosition());
-
-        LinearSlide.setTargetPosition(LinearSlide.getCurrentPosition() + 100);
+        LinearSlide.setPower(0.4);
+        LinearSlide.setTargetPosition(LinearSlide.getCurrentPosition());
         LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -60,70 +58,80 @@ public class DriveTrain2 extends LinearOpMode {
 
         double linear_slide_speed = 0.4;
 
-        double left_claw_pos = 0.5; // left claw: 1 to 0
-        double right_claw_pos = 0.45; // right claw: 0 to 1
+        double left_claw_pos = 0.6; // left claw: 1 to 0
+        double right_claw_pos = 0.35; // right claw: 0 to 1
 
         // expected final position
         // left position: 0.33
         // right position: 0.62
         double diff_claw = 0.17;
 
-        double strafe_sens = 0.5;
+        double drive_sens = 0.5;
 
-        double linear_position = 0; // level of linear slide
+        int linearLevel = 0; // level of linear slide
 
-        int base_level = 0;
+        int base_level = 69;
         int lvl1_pole = 669;
         int lvl2_pole = 1420;
         int lvl3_pole = 2048;
+       // int[] levels = {69, 669, 1420, 2048};
 
-        // run until the end of the match (driver presses STOP)
+        boolean leftBumper = false;
+        boolean rightBumper = false;
+
+        // run until the end of the match (driver presses STOP
+
         while (opModeIsActive()) {
             boolean finger = false;
 
             int position = LinearSlide.getCurrentPosition();
-
+            telemetry.addData("Encoder Position", position);
             if (gamepad1.right_bumper) {
-                telemetry.addData("GP1 Input", "Right Bumper");
-                telemetry.addData("Encoder Position", position);
-//                LinearSlide.setPower(linear_slide_speed);
-                if (linear_position < 3){
-                    linear_position += 1;
-                }
+                rightBumper = true;
             }
-            else if (gamepad1.left_bumper) {
-                telemetry.addData("GP1 Input", "Left Bumper");
-                telemetry.addData("Encoder Position", position);
-//                LinearSlide.setPower(-linear_slide_speed);
-                if (linear_position > 0){
-                    linear_position -= 1;
+            if (!gamepad1.right_bumper && rightBumper) {
+//                telemetry.addData("GP1 Input", "Right Bumper");
+//                telemetry.addData("Encoder Position", position);
+                telemetry.addData("Increased Level", linearLevel);
+                if(linearLevel < 3){
+                    linearLevel++;
                 }
+                rightBumper = false;
+//                telemetry.addData("Linear Position", linearLevel);
+            }
+            if (gamepad1.left_bumper) {
+                leftBumper = true;
+            }
+            if (leftBumper && !gamepad1.left_bumper) {
+//                telemetry.addData("GP1 Input", "Left Bumper");
+//                telemetry.addData("Encoder Position", position);
+                if (linearLevel > 0){
+                    linearLevel--;
+                }
+                leftBumper = false;
+                telemetry.addData("Decreased Level", linearLevel);
+//                telemetry.addData("Linear Position", linearLevel);
             }
 
-            if (linear_position == 0){
-                LinearSlide.setTargetPosition(base_level);
-                LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            if  (linearLevel == 0){
+                    LinearSlide.setTargetPosition(base_level);
+                    LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             }
-            else if (linear_position == 1){
-                LinearSlide.setTargetPosition(lvl1_pole);
-                LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            if (linearLevel == 1){
+                    LinearSlide.setTargetPosition(lvl1_pole);
+                    LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-            else if (linear_position == 2){
-                LinearSlide.setTargetPosition(lvl2_pole);
-                LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            if (linearLevel == 2){
+                    LinearSlide.setTargetPosition(lvl2_pole);
+                    LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-            else if (linear_position == 3){
+            if (linearLevel == 3) {
                 LinearSlide.setTargetPosition(lvl3_pole);
                 LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
-            else {
-                telemetry.addData("GP1 Input", "Not Input");
-                telemetry.addData("Encoder Position", position);
-                LinearSlide.setPower(0);
-            }
-
-            if(gamepad1.a) {
+            if (gamepad1.a) {
                 telemetry.addData("GP2 Input", "Button A");
                 LeftClaw.setPosition(left_claw_pos);
                 RightClaw.setPosition(right_claw_pos);
@@ -162,17 +170,16 @@ public class DriveTrain2 extends LinearOpMode {
             }
 
             // Send calculated power to wheels
-            LeftFrontMotor.setPower(leftFrontPower * strafe_sens);
-            RightFrontMotor.setPower(rightFrontPower * strafe_sens);
-            LeftBackMotor.setPower(leftBackPower * strafe_sens);
-            RightBackMotor.setPower(rightBackPower * strafe_sens);
+            LeftFrontMotor.setPower(leftFrontPower * drive_sens);
+            RightFrontMotor.setPower(rightFrontPower * drive_sens);
+            LeftBackMotor.setPower(leftBackPower * drive_sens);
+            RightBackMotor.setPower(rightBackPower * drive_sens);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-            telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
+            //telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
+            //telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
             telemetry.update();
-
         }
     }
 }
