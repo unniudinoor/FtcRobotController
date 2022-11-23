@@ -22,6 +22,50 @@ public class DriveTrain2 extends LinearOpMode {
     private Servo LeftClaw = null;
     private Servo RightClaw = null;
 
+    // expected final position
+    // left position: 0.33
+    // right position: 0.62
+
+    public void OpenClaw (){
+        double left_claw_pos = 0.6; // left claw: 1 to 0
+        double right_claw_pos = 0.35; // right claw: 0 to 1
+        LeftClaw.setPosition(left_claw_pos);
+        RightClaw.setPosition(right_claw_pos);
+    }
+    public void CloseClaw(){
+        double left_claw_pos = 0.6; // left claw: 1 to 0
+        double right_claw_pos = 0.35; // right claw: 0 to 1
+        double diff_claw = 0.17;
+        LeftClaw.setPosition(left_claw_pos - diff_claw);
+        RightClaw.setPosition(right_claw_pos + diff_claw);
+    }
+    int linearLevel = 0; // level of linear slide
+
+    int base_level = 50;
+    int lvl1_pole = 1650;
+    int lvl2_pole = 3000;
+    int lvl3_pole = 4000;
+    int[] levels = {base_level, lvl1_pole, lvl2_pole, lvl3_pole};
+    boolean leftBumper = false;
+    boolean rightBumper = false;
+
+
+    public void LinearSlideUp() {
+        if(linearLevel < 3){
+            linearLevel++;
+        }
+        rightBumper = false;
+    }
+    public void LinearSlideDown() {
+        if (linearLevel > 0){
+            linearLevel--;
+        }
+        leftBumper = false;
+    }
+    public void UpdateSlidePosition() {
+        LinearSlide.setTargetPosition(levels[linearLevel]);
+        LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
 
     @Override
     public void runOpMode() throws InterruptedException{
@@ -58,26 +102,7 @@ public class DriveTrain2 extends LinearOpMode {
 
         double linear_slide_speed = 0.4;
 
-        double left_claw_pos = 0.6; // left claw: 1 to 0
-        double right_claw_pos = 0.35; // right claw: 0 to 1
-
-        // expected final position
-        // left position: 0.33
-        // right position: 0.62
-        double diff_claw = 0.17;
-
         double drive_sens = 0.5;
-
-        int linearLevel = 0; // level of linear slide
-
-        int base_level = 50;
-        int lvl1_pole = 1650;
-        int lvl2_pole = 3000;
-        int lvl3_pole = 4000;
-        int[] levels = {base_level, lvl1_pole, lvl2_pole, lvl3_pole};
-
-        boolean leftBumper = false;
-        boolean rightBumper = false;
 
         // run until the end of the match (driver presses STOP
 
@@ -86,45 +111,30 @@ public class DriveTrain2 extends LinearOpMode {
 
             int position = LinearSlide.getCurrentPosition();
             telemetry.addData("Encoder Position", position);
+
             if (gamepad1.right_bumper) {
                 rightBumper = true;
             }
             if (!gamepad1.right_bumper && rightBumper) {
-//                telemetry.addData("GP1 Input", "Right Bumper");
-//                telemetry.addData("Encoder Position", position);
-                telemetry.addData("Increased Level", linearLevel);
-                if(linearLevel < 3){
-                    linearLevel++;
-                }
-                rightBumper = false;
-//                telemetry.addData("Linear Position", linearLevel);
+                LinearSlideUp();
             }
+            
             if (gamepad1.left_bumper) {
                 leftBumper = true;
             }
             if (leftBumper && !gamepad1.left_bumper) {
-//                telemetry.addData("GP1 Input", "Left Bumper");
-//                telemetry.addData("Encoder Position", position);
-                if (linearLevel > 0){
-                    linearLevel--;
-                }
-                leftBumper = false;
-                telemetry.addData("Decreased Level", linearLevel);
-//                telemetry.addData("Linear Position", linearLevel);
+                LinearSlideDown();
             }
 
-            LinearSlide.setTargetPosition(levels[linearLevel]);
-            LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            UpdateSlidePosition();
 
             if (gamepad1.a) {
                 telemetry.addData("GP2 Input", "Button A");
-                LeftClaw.setPosition(left_claw_pos);
-                RightClaw.setPosition(right_claw_pos);
+                OpenClaw();
             }
             else if (gamepad1.b){
                 telemetry.addData("GP2 Input", "Button B");
-                LeftClaw.setPosition(left_claw_pos - diff_claw);
-                RightClaw.setPosition(right_claw_pos + diff_claw);
+                CloseClaw();
             }
 
             double max;
