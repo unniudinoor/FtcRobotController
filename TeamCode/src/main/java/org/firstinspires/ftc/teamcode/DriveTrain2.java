@@ -70,11 +70,11 @@ public class DriveTrain2 extends LinearOpMode {
 
         int linearLevel = 0; // level of linear slide
 
-        int base_level = 69;
-        int lvl1_pole = 669;
-        int lvl2_pole = 1420;
-        int lvl3_pole = 2048;
-       // int[] levels = {69, 669, 1420, 2048};
+        int base_level = 50;
+        int lvl1_pole = 1650;
+        int lvl2_pole = 3000;
+        int lvl3_pole = 4000;
+        int[] levels = {base_level, lvl1_pole, lvl2_pole, lvl3_pole};
 
         boolean leftBumper = false;
         boolean rightBumper = false;
@@ -113,23 +113,8 @@ public class DriveTrain2 extends LinearOpMode {
 //                telemetry.addData("Linear Position", linearLevel);
             }
 
-            if  (linearLevel == 0){
-                    LinearSlide.setTargetPosition(base_level);
-                    LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            }
-            if (linearLevel == 1){
-                    LinearSlide.setTargetPosition(lvl1_pole);
-                    LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            if (linearLevel == 2){
-                    LinearSlide.setTargetPosition(lvl2_pole);
-                    LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            if (linearLevel == 3) {
-                LinearSlide.setTargetPosition(lvl3_pole);
-                LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
+            LinearSlide.setTargetPosition(levels[linearLevel]);
+            LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             if (gamepad1.a) {
                 telemetry.addData("GP2 Input", "Button A");
