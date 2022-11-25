@@ -24,24 +24,17 @@ public class DriveTrain2 extends LinearOpMode {
     private Servo RightClaw = null;
 
     // expected final position
-    // left position: 0.33
-    // right position: 0.62
+    // left position: 0.4
+    // right position: 0.55
 
-    public void claw(double left_claw_pos, double right_claw_position, double diffClaw){
-
-        LeftClaw.setPosition(left_claw_pos - diffClaw);
+    public void claw(double left_claw_position, double right_claw_position, double diffClaw){
+        LeftClaw.setPosition(left_claw_position - diffClaw);
         RightClaw.setPosition(right_claw_position + diffClaw);
     }
-//    public void CloseClaw(){
-//        double left_claw_pos = 0.6; // left claw: 1 to 0
-//        double right_claw_pos = 0.35; // right claw: 0 to 1
-//
-//        LeftClaw.setPosition(left_claw_pos - diff_claw);
-//        RightClaw.setPosition(right_claw_pos + diff_claw);
-//    }
+
     int linearLevel = 0; // level of linear slide
 
-    int[] levels = {50, 1800, 3000, 4200};
+    int[] levels = {50, 1800, 3000, 4200}; // linear slide positions for each pole
     boolean leftBumper = false;
     boolean rightBumper = false;
     double linearPowerUp = 0.5;
