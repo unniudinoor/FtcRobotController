@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
 @TeleOp(name="DriveTrain2")
@@ -26,39 +27,37 @@ public class DriveTrain2 extends LinearOpMode {
     // left position: 0.33
     // right position: 0.62
 
-    public void OpenClaw (){
-        double left_claw_pos = 0.6; // left claw: 1 to 0
-        double right_claw_pos = 0.35; // right claw: 0 to 1
-        LeftClaw.setPosition(left_claw_pos);
-        RightClaw.setPosition(right_claw_pos);
+    public void claw(double left_claw_pos, double right_claw_position, double diffClaw){
+
+        LeftClaw.setPosition(left_claw_pos - diffClaw);
+        RightClaw.setPosition(right_claw_position + diffClaw);
     }
-    public void CloseClaw(){
-        double left_claw_pos = 0.6; // left claw: 1 to 0
-        double right_claw_pos = 0.35; // right claw: 0 to 1
-        double diff_claw = 0.17;
-        LeftClaw.setPosition(left_claw_pos - diff_claw);
-        RightClaw.setPosition(right_claw_pos + diff_claw);
-    }
+//    public void CloseClaw(){
+//        double left_claw_pos = 0.6; // left claw: 1 to 0
+//        double right_claw_pos = 0.35; // right claw: 0 to 1
+//
+//        LeftClaw.setPosition(left_claw_pos - diff_claw);
+//        RightClaw.setPosition(right_claw_pos + diff_claw);
+//    }
     int linearLevel = 0; // level of linear slide
 
-    int base_level = 50;
-    int lvl1_pole = 1650;
-    int lvl2_pole = 3000;
-    int lvl3_pole = 4000;
-    int[] levels = {base_level, lvl1_pole, lvl2_pole, lvl3_pole};
+    int[] levels = {50, 1800, 3000, 4200};
     boolean leftBumper = false;
     boolean rightBumper = false;
-
+    double linearPowerUp = 0.5;
+    double linearPowerDown = -0.4;
 
     public void LinearSlideUp() {
         if(linearLevel < 3){
-            linearLevel++;
+            LinearSlide.setPower(linearPowerUp);
+            linearLevel+=1;
         }
         rightBumper = false;
     }
     public void LinearSlideDown() {
         if (linearLevel > 0){
-            linearLevel--;
+            LinearSlide.setPower(linearPowerDown);
+            linearLevel-=1;
         }
         leftBumper = false;
     }
@@ -66,6 +65,7 @@ public class DriveTrain2 extends LinearOpMode {
         LinearSlide.setTargetPosition(levels[linearLevel]);
         LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
+
 
     @Override
     public void runOpMode() throws InterruptedException{
@@ -88,7 +88,7 @@ public class DriveTrain2 extends LinearOpMode {
 
         LinearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        LinearSlide.setPower(0.4);
+        LinearSlide.setPower(0.5);
         LinearSlide.setTargetPosition(LinearSlide.getCurrentPosition());
         LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -100,9 +100,12 @@ public class DriveTrain2 extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        double linear_slide_speed = 0.4;
-
         double drive_sens = 0.5;
+
+        double left_claw_pos = 0.6; // left claw: 1 to 0
+        double right_claw_pos = 0.35; // right claw: 0 to 1
+        double diffClaw = 0.2;
+
 
         // run until the end of the match (driver presses STOP
 
@@ -118,7 +121,7 @@ public class DriveTrain2 extends LinearOpMode {
             if (!gamepad1.right_bumper && rightBumper) {
                 LinearSlideUp();
             }
-            
+
             if (gamepad1.left_bumper) {
                 leftBumper = true;
             }
@@ -130,11 +133,11 @@ public class DriveTrain2 extends LinearOpMode {
 
             if (gamepad1.a) {
                 telemetry.addData("GP2 Input", "Button A");
-                OpenClaw();
+                claw(left_claw_pos, right_claw_pos, 0);
             }
             else if (gamepad1.b){
                 telemetry.addData("GP2 Input", "Button B");
-                CloseClaw();
+                claw(left_claw_pos, right_claw_pos, diffClaw);
             }
 
             double max;
