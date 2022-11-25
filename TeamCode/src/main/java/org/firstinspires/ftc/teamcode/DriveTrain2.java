@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+import org.firstinspires.ftc.teamcode.EruditeUtils;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -22,15 +23,11 @@ public class DriveTrain2 extends LinearOpMode {
     private DcMotor LinearSlide = null;
     private Servo LeftClaw = null;
     private Servo RightClaw = null;
+    EruditeUtils Utilities = new EruditeUtils();
 
-    // expected final position
+    // expected final position for claw
     // left position: 0.4
     // right position: 0.55
-
-    public void claw(double left_claw_position, double right_claw_position, double diffClaw){
-        LeftClaw.setPosition(left_claw_position - diffClaw);
-        RightClaw.setPosition(right_claw_position + diffClaw);
-    }
 
     int linearLevel = 0; // level of linear slide
 
@@ -126,11 +123,11 @@ public class DriveTrain2 extends LinearOpMode {
 
             if (gamepad1.a) {
                 telemetry.addData("GP2 Input", "Button A");
-                claw(left_claw_pos, right_claw_pos, 0);
+                Utilities.claw(LeftClaw, RightClaw, left_claw_pos, right_claw_pos, 0);
             }
             else if (gamepad1.b){
                 telemetry.addData("GP2 Input", "Button B");
-                claw(left_claw_pos, right_claw_pos, diffClaw);
+                Utilities.claw(LeftClaw, RightClaw, left_claw_pos, right_claw_pos, diffClaw);
             }
 
             double max;
