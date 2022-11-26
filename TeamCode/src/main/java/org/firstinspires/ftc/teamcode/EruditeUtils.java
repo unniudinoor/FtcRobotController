@@ -10,13 +10,14 @@ public class EruditeUtils {
     }
 
     public void linearArm(DcMotor slideMotor, int linearLevel, int [] levels){
+        slideMotor.setPower(0.6);
         slideMotor.setTargetPosition(levels[linearLevel]);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void encoderDriveForward(double inches, DcMotor motors[]) {
 
-        double     COUNTS_PER_MOTOR_REV    = 2150.8 ;    // goBILDA Motor Encoder
+        double     COUNTS_PER_MOTOR_REV    = 537.7 ;    // goBILDA Motor Encoder
         double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
         double     WHEEL_DIAMETER_INCHES   = 3.77953 ;     // For figuring circumference
         double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.14159);
@@ -40,7 +41,7 @@ public class EruditeUtils {
     }
     public void encoderDriveBackward(double inches, DcMotor motors[]) {
 
-        double     COUNTS_PER_MOTOR_REV    = 2150.8 ;    // goBILDA Motor Encoder
+        double     COUNTS_PER_MOTOR_REV    = 537.7;    // goBILDA Motor Encoder
         double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
         double     WHEEL_DIAMETER_INCHES   = 3.77953 ;     // For figuring circumference
         double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.14159);
@@ -64,7 +65,7 @@ public class EruditeUtils {
     }
     public void encoderDriveRight(double inches, DcMotor motors[]) {
 
-        double     COUNTS_PER_MOTOR_REV    = 2150.8 ;    // goBILDA Motor Encoder
+        double     COUNTS_PER_MOTOR_REV    = 537.7 ;    // goBILDA Motor Encoder
         double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
         double     WHEEL_DIAMETER_INCHES   = 3.77953 ;     // For figuring circumference
         double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.14159);
@@ -89,7 +90,7 @@ public class EruditeUtils {
 
     public void encoderDriveLeft(double inches, DcMotor motors[]) {
 
-        double     COUNTS_PER_MOTOR_REV    = 2150.8 ;    // goBILDA Motor Encoder
+        double     COUNTS_PER_MOTOR_REV    = 537.7 ;    // goBILDA Motor Encoder
         double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
         double     WHEEL_DIAMETER_INCHES   = 3.77953 ;     // For figuring circumference
         double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.14159);

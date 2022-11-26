@@ -69,8 +69,7 @@ public class AutonomousBasicMovement extends LinearOpMode {
 
     static final double Drive_Speed = 0.6;
     static final double Turn_Speed = 0.5;
-    DcMotor[] motors = {LeftFrontMotor, RightFrontMotor, LeftBackMotor, RightBackMotor};
-    static final double linear_slide_speed = 0.4;
+
     int[] levels = {50, 1800, 3000, 4200};
 
     @Override
@@ -87,6 +86,9 @@ public class AutonomousBasicMovement extends LinearOpMode {
         RightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         RightBackMotor.setDirection(DcMotor.Direction.FORWARD);
         LinearSlideMotor.setDirection(DcMotor.Direction.REVERSE);
+        LinearSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        DcMotor[] motors = {LeftFrontMotor, RightFrontMotor, LeftBackMotor, RightBackMotor};
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
@@ -108,9 +110,12 @@ public class AutonomousBasicMovement extends LinearOpMode {
         LeftBackMotor.setPower(Drive_Speed);
         RightBackMotor.setPower(Drive_Speed);
         runtime.reset();
-        while (opModeIsActive() && runtime.seconds() < 5.0) {
-            Util.encoderDriveForward(4, motors);
+        while (opModeIsActive()) {
+            Util.encoderDriveForward(26, motors);
             Util.linearArm(LinearSlideMotor, 1, levels);
+            sleep(2000);
+            //Util.linearArm(LinearSlideMotor, 0 ,levels);
+            break;
         }
     }
 }
