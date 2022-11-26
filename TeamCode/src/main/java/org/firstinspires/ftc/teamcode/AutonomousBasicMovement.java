@@ -29,10 +29,12 @@
 
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+//import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
  * This file illustrates the concept of driving a path based on time.
@@ -62,6 +64,8 @@ public class AutonomousBasicMovement extends LinearOpMode {
     private DcMotor LeftBackMotor = null;
     private DcMotor RightBackMotor = null;
     private DcMotor LinearSlideMotor = null;
+    private Servo LeftClaw = null;
+    private Servo RightClaw = null;
     EruditeUtils Util = new EruditeUtils();
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -69,6 +73,7 @@ public class AutonomousBasicMovement extends LinearOpMode {
 
     static final double Drive_Speed = 0.6;
     static final double Turn_Speed = 0.5;
+
 
     int[] levels = {50, 1800, 3000, 4200};
 
@@ -81,12 +86,29 @@ public class AutonomousBasicMovement extends LinearOpMode {
         LeftBackMotor = hardwareMap.get(DcMotor.class, "LeftBackMotor");
         RightBackMotor = hardwareMap.get(DcMotor.class, "RightBackMotor");
         LinearSlideMotor = hardwareMap.get(DcMotor.class, "LinearSlideMotor");
+        LeftClaw = hardwareMap.get(Servo.class, "LeftClaw Servo");
+        RightClaw = hardwareMap.get(Servo.class, "RightClaw Servo");
+
         LeftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         LeftBackMotor.setDirection(DcMotor.Direction.REVERSE);
         RightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         RightBackMotor.setDirection(DcMotor.Direction.FORWARD);
         LinearSlideMotor.setDirection(DcMotor.Direction.REVERSE);
+
         LinearSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LeftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LeftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        LinearSlideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LeftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LeftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
 
         DcMotor[] motors = {LeftFrontMotor, RightFrontMotor, LeftBackMotor, RightBackMotor};
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -111,11 +133,18 @@ public class AutonomousBasicMovement extends LinearOpMode {
         RightBackMotor.setPower(Drive_Speed);
         runtime.reset();
         while (opModeIsActive()) {
-            Util.encoderDriveForward(26, motors);
-            Util.linearArm(LinearSlideMotor, 1, levels);
+            Util.claw(LeftClaw, RightClaw, 0.6, 0.35, 0);
             sleep(2000);
-            //Util.linearArm(LinearSlideMotor, 0 ,levels);
-            break;
+            Util.encoderDriveForward(24, motors);
+           Util.claw(LeftClaw, RightClaw, 0.6, 0.35, 0.2);
+           sleep(2000);
+           Util.linearArm(LinearSlideMotor, 1, levels);
+           Util.claw(LeftClaw, RightClaw, 0.6, 0.35, 0);
+           sleep(2000);
+           Util.encoderDriveBackward(10, motors);
+           Util.claw(LeftClaw, RightClaw, 0.6, 0.35, 0.2);
+           Util.linearArm(LinearSlideMotor, 0 ,levels);
+           break;
         }
     }
 }
