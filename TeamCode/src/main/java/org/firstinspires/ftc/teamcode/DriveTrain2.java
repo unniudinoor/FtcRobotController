@@ -51,11 +51,6 @@ public class DriveTrain2 extends LinearOpMode {
         }
         leftBumper = false;
     }
-    public void UpdateSlidePosition() {
-        LinearSlide.setTargetPosition(levels[linearLevel]);
-        LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    }
-
 
     @Override
     public void runOpMode() throws InterruptedException{
@@ -78,9 +73,9 @@ public class DriveTrain2 extends LinearOpMode {
 
         LinearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        LinearSlide.setPower(0.5);
-        LinearSlide.setTargetPosition(LinearSlide.getCurrentPosition());
-        LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        LinearSlide.setPower(0.5);
+//        LinearSlide.setTargetPosition(LinearSlide.getCurrentPosition());
+//        LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
         // Wait for the game to start (driver presses PLAY)
@@ -119,7 +114,7 @@ public class DriveTrain2 extends LinearOpMode {
                 LinearSlideDown();
             }
 
-            UpdateSlidePosition();
+            Utilities.linearArm(LinearSlide, linearLevel, levels);
 
             if (gamepad1.a) {
                 telemetry.addData("GP2 Input", "Button A");

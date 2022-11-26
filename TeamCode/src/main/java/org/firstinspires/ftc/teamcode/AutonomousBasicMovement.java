@@ -57,25 +57,27 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class AutonomousBasicMovement extends LinearOpMode {
 
     /* Declare OpMode members. */
-    private DcMotor         LeftFrontMotor   = null;
-    private DcMotor         RightFrontMotor = null;
-    private DcMotor         LeftBackMotor   = null;
-    private DcMotor         RightBackMotor = null;
-    private DcMotor         LinearSlideMotor = null;
+    private DcMotor LeftFrontMotor = null;
+    private DcMotor RightFrontMotor = null;
+    private DcMotor LeftBackMotor = null;
+    private DcMotor RightBackMotor = null;
+    private DcMotor LinearSlideMotor = null;
+    EruditeUtils Util = new EruditeUtils();
+
+    private ElapsedTime runtime = new ElapsedTime();
 
 
-    private ElapsedTime     runtime = new ElapsedTime();
-
-
-    static final double     FORWARD_SPEED = 0.2;
-    static final double     Turn_Speed = 0.2;
-    static final double     linear_slide_speed = 0.4;
+    static final double Drive_Speed = 0.6;
+    static final double Turn_Speed = 0.5;
+    DcMotor[] motors = {LeftFrontMotor, RightFrontMotor, LeftBackMotor, RightBackMotor};
+    static final double linear_slide_speed = 0.4;
+    int[] levels = {50, 1800, 3000, 4200};
 
     @Override
     public void runOpMode() {
 
         // Initialize the drive system variables.
-        LeftFrontMotor  = hardwareMap.get(DcMotor.class, "LeftFrontMotor");
+        LeftFrontMotor = hardwareMap.get(DcMotor.class, "LeftFrontMotor");
         RightFrontMotor = hardwareMap.get(DcMotor.class, "RightFrontMotor");
         LeftBackMotor = hardwareMap.get(DcMotor.class, "LeftBackMotor");
         RightBackMotor = hardwareMap.get(DcMotor.class, "RightBackMotor");
@@ -100,59 +102,62 @@ public class AutonomousBasicMovement extends LinearOpMode {
         // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
 
         // Step 1:  Drive forward for 3 seconds
-        RightFrontMotor.setPower(FORWARD_SPEED);
-        LeftFrontMotor.setPower(FORWARD_SPEED);
-        LeftBackMotor.setPower(FORWARD_SPEED);
-        RightBackMotor.setPower(FORWARD_SPEED);
 
+        LeftFrontMotor.setPower(Drive_Speed);
+        RightFrontMotor.setPower(Drive_Speed);
+        LeftBackMotor.setPower(Drive_Speed);
+        RightBackMotor.setPower(Drive_Speed);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 2.0)) {
-            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
+        while (opModeIsActive() && runtime.seconds() < 5.0) {
+            Util.encoderDriveForward(4, motors);
+            Util.linearArm(LinearSlideMotor, 1, levels);
         }
-
-        // Step 3:  Drive Backward for 1 Second
-        LeftBackMotor.setPower(Turn_Speed);
-        LeftFrontMotor.setPower(Turn_Speed);
-        RightBackMotor.setPower(-Turn_Speed);
-        RightFrontMotor.setPower(-Turn_Speed);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1)) {
-            telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-
-
-        LinearSlideMotor.setPower(linear_slide_speed);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 2.0)) {
-            telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-
-        LinearSlideMotor.setPower(-linear_slide_speed);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 2.0 )) {
-            telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-        LeftBackMotor.setPower(FORWARD_SPEED);
-        LeftFrontMotor.setPower(FORWARD_SPEED);
-        RightBackMotor.setPower(FORWARD_SPEED);
-        RightFrontMotor.setPower(FORWARD_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 2.0)) {
-            telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-        // Step 4:  Stop
-        LeftFrontMotor.setPower(0);
-        RightFrontMotor.setPower(0);
-        LeftBackMotor.setPower(0);
-        RightBackMotor.setPower(0);
-
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
-        sleep(1000);
     }
 }
+
+//        while (opModeIsActive() && (runtime.seconds() < 2.0)) {
+//            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
+//            telemetry.update();
+//        }
+//
+//        // Step 3:  Drive Backward for 1 Second
+//        LeftBackMotor.setPower(Turn_Speed);
+//        LeftFrontMotor.setPower(Turn_Speed);
+//        RightBackMotor.setPower(-Turn_Speed);
+//        RightFrontMotor.setPower(-Turn_Speed);
+//        runtime.reset();
+//        while (opModeIsActive() && (runtime.seconds() < 1)) {
+//            telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
+//            telemetry.update();
+//        }
+//
+//
+//        LinearSlideMotor.setPower(linear_slide_speed);
+//        runtime.reset();
+//        while (opModeIsActive() && (runtime.seconds() < 2.0)) {
+//            telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
+//            telemetry.update();
+//        }
+//
+//        LinearSlideMotor.setPower(-linear_slide_speed);
+//        runtime.reset();
+//        while (opModeIsActive() && (runtime.seconds() < 2.0 )) {
+//            telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
+//            telemetry.update();
+//        }
+//        LeftBackMotor.setPower(FORWARD_SPEED);
+//        LeftFrontMotor.setPower(FORWARD_SPEED);
+//        RightBackMotor.setPower(FORWARD_SPEED);
+//        RightFrontMotor.setPower(FORWARD_SPEED);
+//        runtime.reset();
+//        while (opModeIsActive() && (runtime.seconds() < 2.0)) {
+//            telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
+//            telemetry.update();
+//        }
+//        // Step 4:  Stop
+//        LeftFrontMotor.setPower(0);
+//        RightFrontMotor.setPower(0);
+//        LeftBackMotor.setPower(0);
+//        RightBackMotor.setPower(0);
+
+
