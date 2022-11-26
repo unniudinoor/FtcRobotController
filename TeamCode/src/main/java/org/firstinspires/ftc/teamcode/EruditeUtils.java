@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class EruditeUtils {
     public void claw(Servo leftClaw, Servo rightClaw, double left_claw_position,
@@ -10,9 +11,10 @@ public class EruditeUtils {
     }
 
     public void linearArm(DcMotor slideMotor, int linearLevel, int [] levels){
-        slideMotor.setPower(0.6);
+        slideMotor.setPower(0.4);
         slideMotor.setTargetPosition(levels[linearLevel]);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while (slideMotor.isBusy());
     }
 
     public void encoderDriveForward(double inches, DcMotor motors[]) {
@@ -30,6 +32,10 @@ public class EruditeUtils {
         newTarget[2] = motors[2].getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
         newTarget[3] = motors[3].getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
 
+//        telemetry = new Telemetry();
+
+
+
         for (int i = 0; i < 4; i+=1){
             motors[i].setTargetPosition(newTarget[i]);
         }
@@ -37,6 +43,7 @@ public class EruditeUtils {
         for (int i = 0; i < 4; i+=1){
             motors[i].setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
+        while (motors[0].isBusy());
 
     }
     public void encoderDriveBackward(double inches, DcMotor motors[]) {
