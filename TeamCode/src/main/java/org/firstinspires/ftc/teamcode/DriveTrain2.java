@@ -98,7 +98,6 @@ public class DriveTrain2 extends LinearOpMode {
             boolean finger = false;
 
             int position = LinearSlide.getCurrentPosition();
-            telemetry.addData("Encoder Position", position);
 
             if (gamepad1.right_bumper) {
                 rightBumper = true;
@@ -114,7 +113,7 @@ public class DriveTrain2 extends LinearOpMode {
                 LinearSlideDown();
             }
 
-            Utilities.linearArm(LinearSlide, linearLevel, levels);
+            Utilities.linearArmManual(LinearSlide, linearLevel, levels);
 
             if (gamepad1.a) {
                 telemetry.addData("GP2 Input", "Button A");
@@ -159,7 +158,6 @@ public class DriveTrain2 extends LinearOpMode {
             RightBackMotor.setPower(rightBackPower * drive_sens);
 
             // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
             //telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
             //telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
             telemetry.update();

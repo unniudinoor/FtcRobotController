@@ -71,11 +71,14 @@ public class AutonomousBasicMovement extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
 
-    static final double Drive_Speed = 0.6;
+    static final double Drive_Speed = 0.4;
     static final double Turn_Speed = 0.5;
 
 
-    int[] levels = {50, 1800, 3000, 4200};
+    int[] levels = {69, 1800, 3000, 4200};
+    double left_claw_pos = 0.6; // left claw: 1 to 0
+    double right_claw_pos = 0.35; // right claw: 0 to 1
+    double diffClaw = 0.2;
 
     @Override
     public void runOpMode() {
@@ -131,20 +134,42 @@ public class AutonomousBasicMovement extends LinearOpMode {
         RightFrontMotor.setPower(Drive_Speed);
         LeftBackMotor.setPower(Drive_Speed);
         RightBackMotor.setPower(Drive_Speed);
+
+        LeftFrontMotor.setTargetPosition(LeftFrontMotor.getCurrentPosition());
+        LeftBackMotor.setTargetPosition(LeftFrontMotor.getCurrentPosition());
+        RightFrontMotor.setTargetPosition(LeftFrontMotor.getCurrentPosition());
+        RightBackMotor.setTargetPosition(LeftFrontMotor.getCurrentPosition());
+
+        LeftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        RightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        LeftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        RightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
         runtime.reset();
         while (opModeIsActive()) {
-            Util.claw(LeftClaw, RightClaw, 0.6, 0.35, 0);
-            sleep(2000);
-            Util.encoderDriveForward(24, motors);
-           Util.claw(LeftClaw, RightClaw, 0.6, 0.35, 0.2);
-           sleep(2000);
-           Util.linearArm(LinearSlideMotor, 1, levels);
-           Util.claw(LeftClaw, RightClaw, 0.6, 0.35, 0);
-           sleep(2000);
-           Util.encoderDriveBackward(10, motors);
-           Util.claw(LeftClaw, RightClaw, 0.6, 0.35, 0.2);
-           Util.linearArm(LinearSlideMotor, 0 ,levels);
-           break;
+            sleep(100);
+            Util.claw(LeftClaw, RightClaw, left_claw_pos, right_claw_pos, diffClaw);
+            sleep(1000);
+            Util.linearArmAutonomous(LinearSlideMotor, 1, levels);
+            Util.encoderDriveBackward(16, motors);
+            //scan img
+            sleep(1000);
+            Util.encoderDriveBackward(11, motors);
+            Util.encoderDriveRight(27, motors);
+            Util.encoderRotate(137, motors);
+            Util.linearArmAutonomous(LinearSlideMotor, 3, levels);
+            Util.encoderDriveForward(13, motors);
+            Util.claw(LeftClaw, RightClaw, left_claw_pos, right_claw_pos, 0);
+            sleep(1000);
+            Util.encoderDriveBackward(8, motors);
+            Util.linearArmAutonomous(LinearSlideMotor, 0, levels);
+            Util.encoderRotate(55, motors);
+
+            break;
+
+
+
         }
     }
 }
