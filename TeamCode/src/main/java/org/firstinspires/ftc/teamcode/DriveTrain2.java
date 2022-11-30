@@ -1,29 +1,47 @@
 package org.firstinspires.ftc.teamcode;
-import org.firstinspires.ftc.teamcode.EruditeUtils;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
 @TeleOp(name="DriveTrain2")
 public class DriveTrain2 extends LinearOpMode {
 
-    // Declare OpMode members for each of the 4 motors.
+    static final double LINEAR_SLIDE_POWER_UP = 0.75;
+    static final double LINEAR_SLIDE_POWER_DOWN = -0.6;
+
+    static final int LINEAR_SLIDE_POSITION_0 = 50;
+    static final int LINEAR_SLIDE_POSITION_1 = 1800;
+    static final int LINEAR_SLIDE_POSITION_2 = 3000;
+    static final int LINEAR_SLIDE_POSITION_3 = 4200;
+
+    static final int LINEAR_SLIDE_MAX_POSITION = 3;
+    static final int LINEAR_SLIDE_MIN_POSITION = 0;
+
+    static final double DRIVE_SENSITIVITY = 0.6;
+    static final double LEFT_CLAW_INTIIAL_POSITION = 0.6;
+    static final double RIGHT_CLAW_INTIIAL_POSITION = 0.35;
+    static final double CLAW_RETRACT_DIFF = 0.2;
+
+
+
     private final ElapsedTime runtime = new ElapsedTime();
-    private DcMotor LeftFrontMotor = null;
-    private DcMotor LeftBackMotor = null;
-    private DcMotor RightFrontMotor = null;
-    private DcMotor RightBackMotor = null;
-    private DcMotor LinearSlide = null;
-    private Servo LeftClaw = null;
-    private Servo RightClaw = null;
-    EruditeUtils Utilities = new EruditeUtils();
+
+    // motors for the wheels
+    private DcMotor leftFrontMotor = null;
+    private DcMotor leftBackMotor = null;
+    private DcMotor rightFrontMotor = null;
+    private DcMotor rightBackMotor = null;
+
+    // motor for linear slide
+    private DcMotor linearSlide = null;
+
+    // motors for claw
+    private Servo leftClaw = null;
+    private Servo rightClaw = null;
+    EruditeUtils utilities = new EruditeUtils();
 
     // expected final position for claw
     // left position: 0.4
@@ -31,22 +49,25 @@ public class DriveTrain2 extends LinearOpMode {
 
     int linearLevel = 0; // level of linear slide
 
-    int[] levels = {50, 1800, 3000, 4200}; // linear slide positions for each pole
+    int[] levels = {
+            LINEAR_SLIDE_POSITION_0, LINEAR_SLIDE_POSITION_1,
+            LINEAR_SLIDE_POSITION_2, LINEAR_SLIDE_POSITION_3
+    }; // linear slide positions for each pole
     boolean leftBumper = false;
     boolean rightBumper = false;
-    double linearPowerUp = 0.5;
-    double linearPowerDown = -0.4;
+
 
     public void LinearSlideUp() {
-        if(linearLevel < 3){
-            LinearSlide.setPower(linearPowerUp);
+        if(linearLevel < LINEAR_SLIDE_MAX_POSITION){
+            linearSlide.setPower(LINEAR_SLIDE_POWER_UP);
             linearLevel+=1;
         }
         rightBumper = false;
     }
+
     public void LinearSlideDown() {
-        if (linearLevel > 0){
-            LinearSlide.setPower(linearPowerDown);
+        if (linearLevel > LINEAR_SLIDE_MIN_POSITION){
+            linearSlide.setPower(LINEAR_SLIDE_POWER_DOWN);
             linearLevel-=1;
         }
         leftBumper = false;
@@ -55,23 +76,21 @@ public class DriveTrain2 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException{
 
-        LinearSlide = hardwareMap.get(DcMotor.class, "LinearSlideMotor");
-        LeftClaw = hardwareMap.get(Servo.class, "LeftClaw Servo");
-        RightClaw = hardwareMap.get(Servo.class, "RightClaw Servo");
-        LeftFrontMotor = hardwareMap.get(DcMotor.class, "LeftFrontMotor");
-        LeftBackMotor = hardwareMap.get(DcMotor.class, "LeftBackMotor");
-        RightFrontMotor = hardwareMap.get(DcMotor.class, "RightFrontMotor");
-        RightBackMotor = hardwareMap.get(DcMotor.class, "RightBackMotor");
+        linearSlide = hardwareMap.get(DcMotor.class, "LinearSlideMotor");
+        leftClaw = hardwareMap.get(Servo.class, "LeftClaw Servo");
+        rightClaw = hardwareMap.get(Servo.class, "RightClaw Servo");
+        leftFrontMotor = hardwareMap.get(DcMotor.class, "LeftFrontMotor");
+        leftBackMotor = hardwareMap.get(DcMotor.class, "LeftBackMotor");
+        rightFrontMotor = hardwareMap.get(DcMotor.class, "RightFrontMotor");
+        rightBackMotor = hardwareMap.get(DcMotor.class, "RightBackMotor");
 
-        LeftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
-        LeftBackMotor.setDirection(DcMotor.Direction.REVERSE);
-        RightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
-        RightBackMotor.setDirection(DcMotor.Direction.FORWARD);
-        LinearSlide.setDirection(DcMotor.Direction.REVERSE);
-        LeftClaw.setDirection(Servo.Direction.FORWARD);
-        RightClaw.setDirection(Servo.Direction.FORWARD);
+        // prepare DCmotor direction
+        utilities.initializeDCMotors(leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor, linearSlide);
 
-        LinearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftClaw.setDirection(Servo.Direction.FORWARD);
+        rightClaw.setDirection(Servo.Direction.FORWARD);
+
+        linearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 //        LinearSlide.setPower(0.5);
 //        LinearSlide.setTargetPosition(LinearSlide.getCurrentPosition());
@@ -85,19 +104,28 @@ public class DriveTrain2 extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        double drive_sens = 0.5;
+        double driveSensitivity = DRIVE_SENSITIVITY;
 
-        double left_claw_pos = 0.6; // left claw: 1 to 0
-        double right_claw_pos = 0.35; // right claw: 0 to 1
-        double diffClaw = 0.2;
+        double leftClawPosition = LEFT_CLAW_INTIIAL_POSITION; // left claw: 1 to 0
+        double rightClawPosition = RIGHT_CLAW_INTIIAL_POSITION; // right claw: 0 to 1
+        double diffClaw = CLAW_RETRACT_DIFF;
 
 
         // run until the end of the match (driver presses STOP
 
+        /*
+            Left Bumper = move linear slide down
+            Right Bumper = move linear slide up
+            Left Joystick = move forward/backward/move left/move right
+            Right Joystick = Rotation
+            Button A: Open claw
+            Button B: close claw
+        */
+
         while (opModeIsActive()) {
             boolean finger = false;
 
-            int position = LinearSlide.getCurrentPosition();
+            int position = linearSlide.getCurrentPosition();
 
             if (gamepad1.right_bumper) {
                 rightBumper = true;
@@ -113,15 +141,15 @@ public class DriveTrain2 extends LinearOpMode {
                 LinearSlideDown();
             }
 
-            Utilities.linearArmManual(LinearSlide, linearLevel, levels);
+            utilities.linearArmManual(linearSlide, linearLevel, levels);
 
             if (gamepad1.a) {
                 telemetry.addData("GP2 Input", "Button A");
-                Utilities.claw(LeftClaw, RightClaw, left_claw_pos, right_claw_pos, 0);
+                utilities.claw(leftClaw, rightClaw, leftClawPosition, rightClawPosition, 0);
             }
             else if (gamepad1.b){
                 telemetry.addData("GP2 Input", "Button B");
-                Utilities.claw(LeftClaw, RightClaw, left_claw_pos, right_claw_pos, diffClaw);
+                utilities.claw(leftClaw, rightClaw, leftClawPosition, rightClawPosition, diffClaw);
             }
 
             double max;
@@ -152,10 +180,10 @@ public class DriveTrain2 extends LinearOpMode {
             }
 
             // Send calculated power to wheels
-            LeftFrontMotor.setPower(leftFrontPower * drive_sens);
-            RightFrontMotor.setPower(rightFrontPower * drive_sens);
-            LeftBackMotor.setPower(leftBackPower * drive_sens);
-            RightBackMotor.setPower(rightBackPower * drive_sens);
+            leftFrontMotor.setPower(leftFrontPower * driveSensitivity);
+            rightFrontMotor.setPower(rightFrontPower * driveSensitivity);
+            leftBackMotor.setPower(leftBackPower * driveSensitivity);
+            rightBackMotor.setPower(rightBackPower * driveSensitivity);
 
             // Show the elapsed game time and wheel power.
             //telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
@@ -163,4 +191,5 @@ public class DriveTrain2 extends LinearOpMode {
             telemetry.update();
         }
     }
+
 }

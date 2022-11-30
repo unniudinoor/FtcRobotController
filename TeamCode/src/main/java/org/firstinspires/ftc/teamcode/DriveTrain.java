@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.ServoController;
 
 
-@TeleOp
+//@TeleOp
 public class DriveTrain extends LinearOpMode {
 
 //declare our motors
