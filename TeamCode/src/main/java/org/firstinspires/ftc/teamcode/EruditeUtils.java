@@ -5,6 +5,16 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class EruditeUtils {
+    public void initializeDCMotors(DcMotor leftFront, DcMotor rightFront,
+                                   DcMotor leftRear, DcMotor rightRear, DcMotor linearSlide
+    ) {
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftRear.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        rightRear.setDirection(DcMotor.Direction.FORWARD);
+        linearSlide.setDirection(DcMotor.Direction.REVERSE);
+    }
+
     public void claw(Servo leftClaw, Servo rightClaw, double left_claw_position,
                      double right_claw_position, double diffClaw){
         leftClaw.setPosition(left_claw_position - diffClaw);
@@ -12,7 +22,7 @@ public class EruditeUtils {
     }
 
     public void linearArmManual(DcMotor slideMotor, int linearLevel, int [] levels){
-        slideMotor.setPower(0.6);
+        slideMotor.setPower(0.8);
         slideMotor.setTargetPosition(levels[linearLevel]);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
@@ -178,6 +188,8 @@ public class EruditeUtils {
         }
 
         while (motors[0].isBusy() || motors[1].isBusy() || motors[2].isBusy() || motors[3].isBusy());
+
+
 
     }
 }
