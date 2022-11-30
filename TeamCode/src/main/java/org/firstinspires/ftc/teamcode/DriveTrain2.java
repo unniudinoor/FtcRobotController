@@ -20,7 +20,7 @@ public class DriveTrain2 extends LinearOpMode {
     static final int LINEAR_SLIDE_MAX_POSITION = 3;
     static final int LINEAR_SLIDE_MIN_POSITION = 0;
 
-    static final double DRIVE_SENSITIVITY = 0.6;
+    static final double DRIVE_SPEED = 0.6;
     static final double LEFT_CLAW_INTIIAL_POSITION = 0.6;
     static final double RIGHT_CLAW_INTIIAL_POSITION = 0.35;
     static final double CLAW_RETRACT_DIFF = 0.2;
@@ -104,7 +104,7 @@ public class DriveTrain2 extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        double driveSensitivity = DRIVE_SENSITIVITY;
+        double driveSensitivity = DRIVE_SPEED;
 
         double leftClawPosition = LEFT_CLAW_INTIIAL_POSITION; // left claw: 1 to 0
         double rightClawPosition = RIGHT_CLAW_INTIIAL_POSITION; // right claw: 0 to 1
