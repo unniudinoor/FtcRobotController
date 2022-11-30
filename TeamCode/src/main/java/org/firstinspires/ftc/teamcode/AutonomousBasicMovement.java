@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -66,6 +67,7 @@ public class AutonomousBasicMovement extends LinearOpMode {
     private DcMotor LinearSlideMotor = null;
     private Servo LeftClaw = null;
     private Servo RightClaw = null;
+    private ColorSensor color_sensor = null;
     EruditeUtils Util = new EruditeUtils();
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -75,7 +77,9 @@ public class AutonomousBasicMovement extends LinearOpMode {
     static final double Turn_Speed = 0.5;
 
 
-    int[] levels = {69, 1800, 3000, 4200};
+    int[] levels = {50, 1800, 3000, 4200};
+    int parking_position;
+    double distanceToPosition;
     double left_claw_pos = 0.6; // left claw: 1 to 0
     double right_claw_pos = 0.35; // right claw: 0 to 1
     double diffClaw = 0.2;
@@ -91,6 +95,7 @@ public class AutonomousBasicMovement extends LinearOpMode {
         LinearSlideMotor = hardwareMap.get(DcMotor.class, "LinearSlideMotor");
         LeftClaw = hardwareMap.get(Servo.class, "LeftClaw Servo");
         RightClaw = hardwareMap.get(Servo.class, "RightClaw Servo");
+        color_sensor = hardwareMap.get(ColorSensor.class, "Color Sensor");
 
         LeftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         LeftBackMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -104,12 +109,6 @@ public class AutonomousBasicMovement extends LinearOpMode {
         RightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         RightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-
-        LinearSlideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        LeftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        LeftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
 
@@ -151,20 +150,40 @@ public class AutonomousBasicMovement extends LinearOpMode {
             sleep(100);
             Util.claw(LeftClaw, RightClaw, left_claw_pos, right_claw_pos, diffClaw);
             sleep(1000);
-            Util.linearArmAutonomous(LinearSlideMotor, 1, levels);
-            Util.encoderDriveBackward(16, motors);
-            //scan img
+            Util.linearArmAutonomous(LinearSlideMotor, levels[1]);
+//            Util.linearArmAutonomous(LinearSlideMotor, 1, levels);
+            Util.encoderDriveBackward(17, motors);
+
             sleep(1000);
-            Util.encoderDriveBackward(11, motors);
-            Util.encoderDriveRight(27, motors);
-            Util.encoderRotate(137, motors);
-            Util.linearArmAutonomous(LinearSlideMotor, 3, levels);
-            Util.encoderDriveForward(13, motors);
+
+            parking_position = Util.coneSleeve(color_sensor);
+            distanceToPosition = Util.strafeForParking(parking_position);
+            telemetry.addData("color", "blue");
+            telemetry.addData("parking position", parking_position);
+            telemetry.update();
+
+            Util.encoderDriveBackward(34, motors);
+            Util.encoderDriveRight(40.4, motors); // 40.75 is too much
+
+            Util.linearArmAutonomous(LinearSlideMotor, levels[3]);
+//            Util.linearArmAutonomous(LinearSlideMotor, 3, levels);
+            Util.encoderDriveForward(6, motors);
+            Util.linearArmAutonomous(LinearSlideMotor, levels[3] - 300);
+
+            sleep(1000);
+
             Util.claw(LeftClaw, RightClaw, left_claw_pos, right_claw_pos, 0);
+            sleep(500);
+            Util.linearArmAutonomous(LinearSlideMotor, levels[3]);
+
             sleep(1000);
-            Util.encoderDriveBackward(8, motors);
-            Util.linearArmAutonomous(LinearSlideMotor, 0, levels);
-            Util.encoderRotate(55, motors);
+
+            Util.encoderDriveBackward(5, motors);
+            Util.linearArmAutonomous(LinearSlideMotor, levels[0]);
+//            Util.linearArmAutonomous(LinearSlideMotor, 0, levels);
+
+            Util.encoderDriveLeft(distanceToPosition, motors);
+            Util.encoderDriveForward(5, motors);
 
             break;
 

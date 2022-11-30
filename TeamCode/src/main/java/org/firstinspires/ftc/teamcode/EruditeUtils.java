@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class EruditeUtils {
@@ -16,11 +17,38 @@ public class EruditeUtils {
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public void linearArmAutonomous(DcMotor slideMotor, int linearLevel, int [] levels){
+//    public void linearArmAutonomous(DcMotor slideMotor, int linearLevel, int [] levels){
+//        slideMotor.setPower(0.8);
+//        slideMotor.setTargetPosition(levels[linearLevel]);
+//        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        while (slideMotor.isBusy());
+//    }
+    public void linearArmAutonomous(DcMotor slideMotor, int position){
         slideMotor.setPower(0.8);
-        slideMotor.setTargetPosition(levels[linearLevel]);
+        slideMotor.setTargetPosition(position);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         while (slideMotor.isBusy());
+    }
+
+    public Integer coneSleeve (ColorSensor color_sensor) {
+        if (color_sensor.blue() > color_sensor.red() && color_sensor.blue() > color_sensor.green()) {
+//            telemetry.addData("Color Detected", "Blue: go to parking position 1");
+            return 1;
+        } else if (color_sensor.red() > color_sensor.blue() && color_sensor.red() > color_sensor.green()) {
+//            telemetry.addData("Color Detected", "Red: go to parking position 2");
+            return 2;
+        } else if (color_sensor.green() > color_sensor.blue() && color_sensor.green() > color_sensor.red()) {
+//            telemetry.addData("Color Detected", "Green: go to parking position 3");
+            return 3;
+        }
+        else {
+            return 4;
+        }
+    }
+    public Integer strafeForParking (int parkingPosition){
+        int defaultPosition = 66;
+        int[] positionsInInches = {14, 40, 66, defaultPosition}; //defaulted to position 3
+        return positionsInInches[parkingPosition - 1];
     }
 
     public void encoderDriveForward(double inches, DcMotor motors[]) {
@@ -48,7 +76,6 @@ public class EruditeUtils {
             motors[i].setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
         while (motors[0].isBusy() || motors[1].isBusy() || motors[2].isBusy() || motors[3].isBusy());
-
     }
     public void encoderDriveBackward(double inches, DcMotor motors[]) {
 
