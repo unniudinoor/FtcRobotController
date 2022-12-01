@@ -21,18 +21,12 @@ public class EruditeUtils {
         rightClaw.setPosition(right_claw_position + diffClaw);
     }
 
-    public void linearArmManual(DcMotor slideMotor, int linearLevel, int [] levels){
+    public void linearArmManual(DcMotor slideMotor, int position){
         slideMotor.setPower(0.8);
-        slideMotor.setTargetPosition(levels[linearLevel]);
+        slideMotor.setTargetPosition(position);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-//    public void linearArmAutonomous(DcMotor slideMotor, int linearLevel, int [] levels){
-//        slideMotor.setPower(0.8);
-//        slideMotor.setTargetPosition(levels[linearLevel]);
-//        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        while (slideMotor.isBusy());
-//    }
     public void linearArmAutonomous(DcMotor slideMotor, int position){
         slideMotor.setPower(0.8);
         slideMotor.setTargetPosition(position);

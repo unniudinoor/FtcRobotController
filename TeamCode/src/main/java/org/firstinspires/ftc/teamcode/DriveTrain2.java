@@ -16,6 +16,7 @@ public class DriveTrain2 extends LinearOpMode {
     static final int LINEAR_SLIDE_POSITION_1 = 1800;
     static final int LINEAR_SLIDE_POSITION_2 = 3000;
     static final int LINEAR_SLIDE_POSITION_3 = 4200;
+    static final int LINEAR_SLIDE_INCREMENTS = 100;
 
     static final int LINEAR_SLIDE_MAX_POSITION = 3;
     static final int LINEAR_SLIDE_MIN_POSITION = 0;
@@ -48,13 +49,15 @@ public class DriveTrain2 extends LinearOpMode {
     // right position: 0.55
 
     int linearLevel = 0; // level of linear slide
-
     int[] levels = {
             LINEAR_SLIDE_POSITION_0, LINEAR_SLIDE_POSITION_1,
             LINEAR_SLIDE_POSITION_2, LINEAR_SLIDE_POSITION_3
     }; // linear slide positions for each pole
+    int currentPos = levels[0];
     boolean leftBumper = false;
     boolean rightBumper = false;
+
+
 
 
     public void LinearSlideUp() {
@@ -127,11 +130,15 @@ public class DriveTrain2 extends LinearOpMode {
 
             int position = linearSlide.getCurrentPosition();
 
+
+
             if (gamepad1.right_bumper) {
                 rightBumper = true;
             }
             if (!gamepad1.right_bumper && rightBumper) {
                 LinearSlideUp();
+                currentPos = levels[linearLevel];
+
             }
 
             if (gamepad1.left_bumper) {
@@ -139,15 +146,23 @@ public class DriveTrain2 extends LinearOpMode {
             }
             if (leftBumper && !gamepad1.left_bumper) {
                 LinearSlideDown();
+                currentPos = levels[linearLevel];
             }
 
-            utilities.linearArmManual(linearSlide, linearLevel, levels);
+            utilities.linearArmManual(linearSlide, currentPos);
 
-            if (gamepad1.a) {
+            if (gamepad1.x) {
+                currentPos = levels[linearLevel] + 300;
+            }
+            else if (gamepad1.y) {
+                currentPos = levels[linearLevel] - 300;
+            }
+
+            if (gamepad1.b) {
                 telemetry.addData("GP2 Input", "Button A");
                 utilities.claw(leftClaw, rightClaw, leftClawPosition, rightClawPosition, 0);
             }
-            else if (gamepad1.b){
+            else if (gamepad1.a){
                 telemetry.addData("GP2 Input", "Button B");
                 utilities.claw(leftClaw, rightClaw, leftClawPosition, rightClawPosition, diffClaw);
             }
