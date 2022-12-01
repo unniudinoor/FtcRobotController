@@ -78,7 +78,7 @@ public class DriveTrain2 extends LinearOpMode {
 
         linearSlide = hardwareMap.get(DcMotor.class, "LinearSlideMotor");
         leftClaw = hardwareMap.get(Servo.class, "LeftClaw Servo");
-        rightClaw = hardwareMap.get(Servo.class, "RightClaw Servo");
+        rightClaw = hardwareMap.get(Servo.                                                                                                                                                 class, "RightClaw Servo");
         leftFrontMotor = hardwareMap.get(DcMotor.class, "LeftFrontMotor");
         leftBackMotor = hardwareMap.get(DcMotor.class, "LeftBackMotor");
         rightFrontMotor = hardwareMap.get(DcMotor.class, "RightFrontMotor");

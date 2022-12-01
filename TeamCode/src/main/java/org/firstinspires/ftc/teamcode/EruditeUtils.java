@@ -41,6 +41,8 @@ public class EruditeUtils {
     }
 
     public Integer coneSleeve (ColorSensor color_sensor) {
+        int[] hue = {20, 100, 140, 220, 260, 340};
+        //330-30(red), 30-90(Yellow), 90-150(green), 150-210(Cyan), 210-270 (Blue), 270-330 Purple
         if (color_sensor.blue() > color_sensor.red() && color_sensor.blue() > color_sensor.green()) {
 //            telemetry.addData("Color Detected", "Blue: go to parking position 1");
             return 1;
@@ -55,9 +57,14 @@ public class EruditeUtils {
             return 4;
         }
     }
-    public Integer strafeForParking (int parkingPosition){
+    public Integer parkingForRightPosition (int parkingPosition){
         int defaultPosition = 66;
         int[] positionsInInches = {14, 40, 66, defaultPosition}; //defaulted to position 3
+        return positionsInInches[parkingPosition - 1];
+    }
+    public Integer parkingForLeftPosition (int parkingPosition){
+        int defaultPosition = 66;
+        int[] positionsInInches = {66, 40, 14, defaultPosition}; //defaulted to position 3
         return positionsInInches[parkingPosition - 1];
     }
 
