@@ -17,7 +17,7 @@ public class DriveTrain2 extends LinearOpMode {
     static final int LINEAR_SLIDE_POSITION_1 = 1800;
     static final int LINEAR_SLIDE_POSITION_2 = 3000;
     static final int LINEAR_SLIDE_POSITION_3 = 4200;
-    static final int LINEAR_SLIDE_INCREMENTS = 100;
+    static final int LINEAR_SLIDE_INCREMENTS = 300;
 
     static final int LINEAR_SLIDE_MAX_POSITION = 3;
     static final int LINEAR_SLIDE_MIN_POSITION = 0;
@@ -155,10 +155,12 @@ public class DriveTrain2 extends LinearOpMode {
             utilities.linearArmManual(linearSlide, currentPos);
 
             if (gamepad1.x) {
-                currentPos = levels[linearLevel] + 300;
+                currentPos = levels[linearLevel] + LINEAR_SLIDE_INCREMENTS;
+                currentPos = currentPos > levels[3] ? levels[3] : currentPos;
             }
             else if (gamepad1.y) {
-                currentPos = levels[linearLevel] - 300;
+                currentPos = levels[linearLevel] - LINEAR_SLIDE_INCREMENTS;
+                currentPos = currentPos < levels[0] ? levels[0] : currentPos;
             }
 
             if (gamepad1.b) {
