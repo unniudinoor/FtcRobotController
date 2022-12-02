@@ -29,13 +29,11 @@
 
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-//import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
  * This file illustrates the concept of driving a path based on time.
@@ -56,7 +54,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="AutonomousBasicMV", group="Robot")
+@Autonomous(name="AutonomousRightPosition", group="Robot")
 public class AutonomousBasicMovement extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -110,8 +108,6 @@ public class AutonomousBasicMovement extends LinearOpMode {
         RightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
-
-
         DcMotor[] motors = {LeftFrontMotor, RightFrontMotor, LeftBackMotor, RightBackMotor};
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -148,12 +144,16 @@ public class AutonomousBasicMovement extends LinearOpMode {
         runtime.reset();
         while (opModeIsActive()) {
             sleep(100);
+            color_sensor.enableLed(true);
+
+            // to move back to pick up cone (not needed)
+            // Util.encoderDriveBackward(0.5, motors);
+
             Util.claw(LeftClaw, RightClaw, left_claw_pos, right_claw_pos, diffClaw);
             sleep(1000);
             Util.linearArmAutonomous(LinearSlideMotor, levels[1]);
 //            Util.linearArmAutonomous(LinearSlideMotor, 1, levels);
             Util.encoderDriveBackward(17, motors);
-
             sleep(1000);
 
             parking_position = Util.coneSleeve(color_sensor);
@@ -167,77 +167,30 @@ public class AutonomousBasicMovement extends LinearOpMode {
             telemetry.addData("parking position", parking_position);
             telemetry.update();
 
+            color_sensor.enableLed(false);
+
             Util.encoderDriveBackward(34, motors);
             Util.encoderDriveRight(40.4, motors); // 40.75 is too much
 
             Util.linearArmAutonomous(LinearSlideMotor, levels[3]);
 
-            Util.encoderDriveForward(6, motors);
+            Util.encoderDriveForward(5, motors);
             Util.linearArmAutonomous(LinearSlideMotor, levels[3] - 300);
-
 
             Util.claw(LeftClaw, RightClaw, left_claw_pos, right_claw_pos, 0);
             sleep(500);
             Util.linearArmAutonomous(LinearSlideMotor, levels[3]);
 
-
-            Util.encoderDriveBackward(5, motors);
+            Util.encoderDriveBackward(4, motors);
             Util.linearArmAutonomous(LinearSlideMotor, levels[0]);
 
             Util.encoderDriveLeft(distanceToPosition, motors);
             Util.encoderDriveForward(5 + terminalParking, motors);
 
             break;
-
-
-
         }
     }
 }
 
-//        while (opModeIsActive() && (runtime.seconds() < 2.0)) {
-//            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
-//            telemetry.update();
-//        }
-//
-//        // Step 3:  Drive Backward for 1 Second
-//        LeftBackMotor.setPower(Turn_Speed);
-//        LeftFrontMotor.setPower(Turn_Speed);
-//        RightBackMotor.setPower(-Turn_Speed);
-//        RightFrontMotor.setPower(-Turn_Speed);
-//        runtime.reset();
-//        while (opModeIsActive() && (runtime.seconds() < 1)) {
-//            telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
-//            telemetry.update();
-//        }
-//
-//
-//        LinearSlideMotor.setPower(linear_slide_speed);
-//        runtime.reset();
-//        while (opModeIsActive() && (runtime.seconds() < 2.0)) {
-//            telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
-//            telemetry.update();
-//        }
-//
-//        LinearSlideMotor.setPower(-linear_slide_speed);
-//        runtime.reset();
-//        while (opModeIsActive() && (runtime.seconds() < 2.0 )) {
-//            telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
-//            telemetry.update();
-//        }
-//        LeftBackMotor.setPower(FORWARD_SPEED);
-//        LeftFrontMotor.setPower(FORWARD_SPEED);
-//        RightBackMotor.setPower(FORWARD_SPEED);
-//        RightFrontMotor.setPower(FORWARD_SPEED);
-//        runtime.reset();
-//        while (opModeIsActive() && (runtime.seconds() < 2.0)) {
-//            telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
-//            telemetry.update();
-//        }
-//        // Step 4:  Stop
-//        LeftFrontMotor.setPower(0);
-//        RightFrontMotor.setPower(0);
-//        LeftBackMotor.setPower(0);
-//        RightBackMotor.setPower(0);
 
 

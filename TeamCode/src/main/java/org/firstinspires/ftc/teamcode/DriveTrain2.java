@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 
 @TeleOp(name="DriveTrain2")
@@ -41,6 +42,7 @@ public class DriveTrain2 extends LinearOpMode {
     // motors for claw
     private Servo leftClaw = null;
     private Servo rightClaw = null;
+    private ColorSensor colorSensor = null;
     EruditeUtils utilities = new EruditeUtils();
 
     // expected final position for claw
@@ -78,11 +80,12 @@ public class DriveTrain2 extends LinearOpMode {
 
         linearSlide = hardwareMap.get(DcMotor.class, "LinearSlideMotor");
         leftClaw = hardwareMap.get(Servo.class, "LeftClaw Servo");
-        rightClaw = hardwareMap.get(Servo.                                                                                                                                                 class, "RightClaw Servo");
+        rightClaw = hardwareMap.get(Servo.class, "RightClaw Servo");
         leftFrontMotor = hardwareMap.get(DcMotor.class, "LeftFrontMotor");
         leftBackMotor = hardwareMap.get(DcMotor.class, "LeftBackMotor");
         rightFrontMotor = hardwareMap.get(DcMotor.class, "RightFrontMotor");
         rightBackMotor = hardwareMap.get(DcMotor.class, "RightBackMotor");
+        colorSensor = hardwareMap.get(ColorSensor.class, "Color Sensor");
 
         // prepare DCmotor direction
         utilities.initializeDCMotors(leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor, linearSlide);
@@ -121,8 +124,8 @@ public class DriveTrain2 extends LinearOpMode {
             Button A: Open claw
             Button B: close claw
         */
-
         while (opModeIsActive()) {
+            colorSensor.enableLed(false);
             boolean finger = false;
 
             int position = linearSlide.getCurrentPosition();

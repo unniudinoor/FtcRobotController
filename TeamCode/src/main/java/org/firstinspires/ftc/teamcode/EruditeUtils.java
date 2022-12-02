@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class EruditeUtils {
@@ -27,17 +28,18 @@ public class EruditeUtils {
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-//    public void linearArmAutonomous(DcMotor slideMotor, int linearLevel, int [] levels){
-//        slideMotor.setPower(0.8);
-//        slideMotor.setTargetPosition(levels[linearLevel]);
-//        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        while (slideMotor.isBusy());
-//    }
     public void linearArmAutonomous(DcMotor slideMotor, int position){
         slideMotor.setPower(0.8);
         slideMotor.setTargetPosition(position);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while (slideMotor.isBusy());
+
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+
+        while (slideMotor.isBusy()){
+            if(time.seconds() > 4)
+                break;
+        }
     }
 
     public Integer coneSleeve (ColorSensor color_sensor) {
