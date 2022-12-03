@@ -55,7 +55,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @Autonomous(name="AutonomousRightPosition", group="Robot")
-public class AutonomousBasicMovement extends LinearOpMode {
+public class AutonomousRightPosition extends LinearOpMode {
 
     /* Declare OpMode members. */
     private DcMotor LeftFrontMotor = null;
@@ -147,13 +147,13 @@ public class AutonomousBasicMovement extends LinearOpMode {
             color_sensor.enableLed(true);
 
             // to move back to pick up cone (not needed)
-            // Util.encoderDriveBackward(0.5, motors);
 
             Util.claw(LeftClaw, RightClaw, left_claw_pos, right_claw_pos, diffClaw);
-            sleep(1000);
+            Util.encoderDriveBackward(0.6, motors);
+            sleep(500);
             Util.linearArmAutonomous(LinearSlideMotor, levels[1]);
 //            Util.linearArmAutonomous(LinearSlideMotor, 1, levels);
-            Util.encoderDriveBackward(17, motors);
+            Util.encoderDriveBackward(16.4, motors);
             sleep(1000);
 
             parking_position = Util.coneSleeve(color_sensor);
@@ -179,13 +179,12 @@ public class AutonomousBasicMovement extends LinearOpMode {
 
             Util.claw(LeftClaw, RightClaw, left_claw_pos, right_claw_pos, 0);
             sleep(500);
-            Util.linearArmAutonomous(LinearSlideMotor, levels[3]);
 
             Util.encoderDriveBackward(4, motors);
             Util.linearArmAutonomous(LinearSlideMotor, levels[0]);
 
             Util.encoderDriveLeft(distanceToPosition, motors);
-            Util.encoderDriveForward(5 + terminalParking, motors);
+            Util.encoderDriveForward(terminalParking, motors);
 
             break;
         }

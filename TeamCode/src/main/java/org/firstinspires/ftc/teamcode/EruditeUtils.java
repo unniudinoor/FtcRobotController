@@ -197,9 +197,6 @@ public class EruditeUtils {
         }
 
         while (motors[0].isBusy() || motors[1].isBusy() || motors[2].isBusy() || motors[3].isBusy());
-
-
-
     }
 }
 

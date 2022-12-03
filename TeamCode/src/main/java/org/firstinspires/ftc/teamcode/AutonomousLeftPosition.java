@@ -29,13 +29,11 @@
 
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-//import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
  * This file illustrates the concept of driving a path based on time.
@@ -110,8 +108,6 @@ public class AutonomousLeftPosition extends LinearOpMode {
         RightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
-
-
         DcMotor[] motors = {LeftFrontMotor, RightFrontMotor, LeftBackMotor, RightBackMotor};
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -148,12 +144,16 @@ public class AutonomousLeftPosition extends LinearOpMode {
         runtime.reset();
         while (opModeIsActive()) {
             sleep(100);
+            color_sensor.enableLed(true);
+
+            // to move back to pick up cone (not needed)
+
             Util.claw(LeftClaw, RightClaw, left_claw_pos, right_claw_pos, diffClaw);
-            sleep(1000);
+            Util.encoderDriveBackward(0.6, motors);
+            sleep(500);
             Util.linearArmAutonomous(LinearSlideMotor, levels[1]);
 //            Util.linearArmAutonomous(LinearSlideMotor, 1, levels);
-            Util.encoderDriveBackward(17, motors);
-
+            Util.encoderDriveBackward(16.4, motors);
             sleep(1000);
 
             parking_position = Util.coneSleeve(color_sensor);
@@ -167,28 +167,29 @@ public class AutonomousLeftPosition extends LinearOpMode {
             telemetry.addData("parking position", parking_position);
             telemetry.update();
 
+            color_sensor.enableLed(false);
+
             Util.encoderDriveBackward(34, motors);
             Util.encoderDriveLeft(40.4, motors); // 40.75 is too much
 
             Util.linearArmAutonomous(LinearSlideMotor, levels[3]);
 
-            Util.encoderDriveForward(6, motors);
+            Util.encoderDriveForward(5, motors);
             Util.linearArmAutonomous(LinearSlideMotor, levels[3] - 300);
-
 
             Util.claw(LeftClaw, RightClaw, left_claw_pos, right_claw_pos, 0);
             sleep(500);
-            Util.linearArmAutonomous(LinearSlideMotor, levels[3]);
 
-
-            Util.encoderDriveBackward(5, motors);
+            Util.encoderDriveBackward(4, motors);
             Util.linearArmAutonomous(LinearSlideMotor, levels[0]);
 
             Util.encoderDriveRight(distanceToPosition, motors);
-            Util.encoderDriveForward(5 + terminalParking, motors);
+            Util.encoderDriveForward(terminalParking, motors);
 
             break;
         }
     }
 }
+
+
 
