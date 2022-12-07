@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class EruditeUtils {
@@ -21,26 +22,29 @@ public class EruditeUtils {
         rightClaw.setPosition(right_claw_position + diffClaw);
     }
 
-    public void linearArmManual(DcMotor slideMotor, int linearLevel, int [] levels){
+    public void linearArmManual(DcMotor slideMotor, int position){
         slideMotor.setPower(0.8);
-        slideMotor.setTargetPosition(levels[linearLevel]);
+        slideMotor.setTargetPosition(position);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-//    public void linearArmAutonomous(DcMotor slideMotor, int linearLevel, int [] levels){
-//        slideMotor.setPower(0.8);
-//        slideMotor.setTargetPosition(levels[linearLevel]);
-//        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        while (slideMotor.isBusy());
-//    }
     public void linearArmAutonomous(DcMotor slideMotor, int position){
         slideMotor.setPower(0.8);
         slideMotor.setTargetPosition(position);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while (slideMotor.isBusy());
+
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+
+        while (slideMotor.isBusy()){
+            if(time.seconds() > 4)
+                break;
+        }
     }
 
     public Integer coneSleeve (ColorSensor color_sensor) {
+        int[] hue = {20, 100, 140, 220, 260, 340};
+        //330-30(red), 30-90(Yellow), 90-150(green), 150-210(Cyan), 210-270 (Blue), 270-330 Purple
         if (color_sensor.blue() > color_sensor.red() && color_sensor.blue() > color_sensor.green()) {
 //            telemetry.addData("Color Detected", "Blue: go to parking position 1");
             return 1;
@@ -55,9 +59,14 @@ public class EruditeUtils {
             return 4;
         }
     }
-    public Integer strafeForParking (int parkingPosition){
+    public Integer parkingForRightPosition (int parkingPosition){
         int defaultPosition = 66;
         int[] positionsInInches = {14, 40, 66, defaultPosition}; //defaulted to position 3
+        return positionsInInches[parkingPosition - 1];
+    }
+    public Integer parkingForLeftPosition (int parkingPosition){
+        int defaultPosition = 66;
+        int[] positionsInInches = {66, 40, 14, defaultPosition}; //defaulted to position 3
         return positionsInInches[parkingPosition - 1];
     }
 
@@ -188,9 +197,6 @@ public class EruditeUtils {
         }
 
         while (motors[0].isBusy() || motors[1].isBusy() || motors[2].isBusy() || motors[3].isBusy());
-
-
-
     }
 }
 

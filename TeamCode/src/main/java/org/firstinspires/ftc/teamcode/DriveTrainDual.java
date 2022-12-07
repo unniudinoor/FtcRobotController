@@ -1,15 +1,15 @@
 package org.firstinspires.ftc.teamcode;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 
 
-@TeleOp(name="DriveTrain2")
-public class DriveTrain2 extends LinearOpMode {
-
+@TeleOp(name="DriveTrainDual")
+public class DriveTrainDual extends LinearOpMode {
     static final double LINEAR_SLIDE_POWER_UP = 0.75;
     static final double LINEAR_SLIDE_POWER_DOWN = -0.6;
 
@@ -59,8 +59,8 @@ public class DriveTrain2 extends LinearOpMode {
     boolean leftBumper = false;
     boolean rightBumper = false;
 
-
-
+    boolean gamepadX = false;
+    boolean gamepadY = false;
 
     public void LinearSlideUp() {
         if(linearLevel < LINEAR_SLIDE_MAX_POSITION){
@@ -73,7 +73,7 @@ public class DriveTrain2 extends LinearOpMode {
     public void LinearSlideDown() {
         if (linearLevel > LINEAR_SLIDE_MIN_POSITION){
             linearSlide.setPower(LINEAR_SLIDE_POWER_DOWN);
-            linearLevel-=1;
+            linearLevel=0;
         }
         leftBumper = false;
     }
@@ -97,11 +97,6 @@ public class DriveTrain2 extends LinearOpMode {
         rightClaw.setDirection(Servo.Direction.FORWARD);
 
         linearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-//        LinearSlide.setPower(0.5);
-//        LinearSlide.setTargetPosition(LinearSlide.getCurrentPosition());
-//        LinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -133,41 +128,53 @@ public class DriveTrain2 extends LinearOpMode {
 
             int position = linearSlide.getCurrentPosition();
 
+            if(gamepad1.right_trigger > 0.5){
+                driveSensitivity = DRIVE_SPEED;
+            }
+            if(gamepad1.left_trigger > 0.5){
+                driveSensitivity = DRIVE_SPEED - 0.2;
+            }
 
-
-            if (gamepad1.right_bumper) {
+            if (gamepad2.right_bumper) {
                 rightBumper = true;
             }
-            if (!gamepad1.right_bumper && rightBumper) {
+            if (!gamepad2.right_bumper && rightBumper) {
                 LinearSlideUp();
                 currentPos = levels[linearLevel];
-
             }
 
-            if (gamepad1.left_bumper) {
+            if (gamepad2.left_bumper) {
                 leftBumper = true;
             }
-            if (leftBumper && !gamepad1.left_bumper) {
+            if (leftBumper && !gamepad2.left_bumper) {
                 LinearSlideDown();
                 currentPos = levels[linearLevel];
             }
 
             utilities.linearArmManual(linearSlide, currentPos);
 
-            if (gamepad1.x) {
-                currentPos = levels[linearLevel] + LINEAR_SLIDE_INCREMENTS;
-                currentPos = currentPos > levels[3] ? levels[3] : currentPos;
+            if (gamepad2.x) {
+                gamepadX = true;
             }
-            else if (gamepad1.y) {
-                currentPos = levels[linearLevel] - LINEAR_SLIDE_INCREMENTS;
+            if (!gamepad2.x && gamepadX) {
+                currentPos += LINEAR_SLIDE_INCREMENTS;
+                currentPos = currentPos > levels[3] ? levels[3] : currentPos;
+                gamepadX = false;
+            }
+            if (gamepad2.y) {
+                gamepadY = true;
+            }
+            if (!gamepad2.y && gamepadY) {
+                currentPos -= LINEAR_SLIDE_INCREMENTS;
                 currentPos = currentPos < levels[0] ? levels[0] : currentPos;
+                gamepadY = false;
             }
 
-            if (gamepad1.b) {
+            if (gamepad2.a) {
                 telemetry.addData("GP2 Input", "Button A");
                 utilities.claw(leftClaw, rightClaw, leftClawPosition, rightClawPosition, 0);
             }
-            else if (gamepad1.a){
+            else if (gamepad2.b){
                 telemetry.addData("GP2 Input", "Button B");
                 utilities.claw(leftClaw, rightClaw, leftClawPosition, rightClawPosition, diffClaw);
             }
