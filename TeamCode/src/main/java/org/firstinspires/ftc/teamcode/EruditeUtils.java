@@ -64,6 +64,11 @@ public class EruditeUtils {
         int[] positionsInInches = {14, 40, 66, defaultPosition}; //defaulted to position 3
         return positionsInInches[parkingPosition - 1];
     }
+    public Integer parkingPosNoCone (int parkingPosition){
+        int defaultPosition = 0;
+        int[] positionsInInches = {24, 0, -24, defaultPosition}; //defaulted to position 3
+        return positionsInInches[parkingPosition - 1];
+    }
     public Integer parkingForLeftPosition (int parkingPosition){
         int defaultPosition = 66;
         int[] positionsInInches = {66, 40, 14, defaultPosition}; //defaulted to position 3
