@@ -5,6 +5,19 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class EruditeUtils {
+    public void launchDrone(Servo launcher, double servoStart, double servodiff){
+        launcher.setPosition(servoStart + servodiff);
+    }
+    public void centerStageInitialize(DcMotor leftFront, DcMotor rightFront,
+                                   DcMotor leftRear, DcMotor rightRear, DcMotor leftSlide, DcMotor rightSlide
+    ) {
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftRear.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        rightRear.setDirection(DcMotor.Direction.FORWARD);
+        leftSlide.setDirection(DcMotor.Direction.REVERSE);
+        rightSlide.setDirection(DcMotor.Direction.FORWARD);
+    }
     public void initializeDCMotors(DcMotor leftFront, DcMotor rightFront,
                                    DcMotor leftRear, DcMotor rightRear, DcMotor linearSlide
     ) {
@@ -26,7 +39,11 @@ public class EruditeUtils {
         slideMotor.setTargetPosition(levels[linearLevel]);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
-
+    public void linearArmTestManual(DcMotor slideMotor, int linearLevel, int [] levels, double power){
+        slideMotor.setPower(power);
+        slideMotor.setTargetPosition(levels[linearLevel]);
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
 //    public void linearArmAutonomous(DcMotor slideMotor, int linearLevel, int [] levels){
 //        slideMotor.setPower(0.8);
 //        slideMotor.setTargetPosition(levels[linearLevel]);
