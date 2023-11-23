@@ -25,13 +25,13 @@ public class DroneTest extends LinearOpMode {
         while (opModeIsActive()) {
             boolean finger = false;
             if (gamepad1.a) {
-                droneLauncher.setPosition(-05);
+                droneLauncher.setPosition(0);
             }
             if (gamepad1.b) {
-                droneLauncher.setPosition(.9);
-
+                droneLauncher.setPosition(1);
+            }
             telemetry.update();
-}       }
+      }
     }
 }
 

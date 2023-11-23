@@ -2,11 +2,15 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import java.lang.Math;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class EruditeUtils {
-    public void launchDrone(Servo launcher, double servoStart, double servodiff){
-        launcher.setPosition(servoStart + servodiff);
+    public void launchDrone(Servo launcher, double servoStart, double servoDiff){
+        launcher.setPosition(servoStart + servoDiff);
+    }
+    public int convertSlideValues(int left){
+        return (int)Math.round(left * 384.5/537.7);
     }
     public void centerStageInitialize(DcMotor leftFront, DcMotor rightFront,
                                    DcMotor leftRear, DcMotor rightRear, DcMotor leftSlide, DcMotor rightSlide

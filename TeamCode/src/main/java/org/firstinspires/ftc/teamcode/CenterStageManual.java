@@ -2,24 +2,22 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @TeleOp(name="CenterStageManual")
 public class CenterStageManual extends LinearOpMode {
 
-    static final double LEFT_LINEAR_SLIDE_POWER_UP = 0.8;
-    static final double LEFT_LINEAR_SLIDE_POWER_DOWN = -0.6;
-    static final double RIGHT_LINEAR_SLIDE_POWER_UP = LEFT_LINEAR_SLIDE_POWER_UP * 435 / 312;
-    static final double RIGHT_LINEAR_SLIDE_POWER_DOWN = LEFT_LINEAR_SLIDE_POWER_UP * 435 / 312;
+    static final double LEFT_LINEAR_SLIDE_POWER = 0.75;
+    static final double RIGHT_LINEAR_SLIDE_POWER = LEFT_LINEAR_SLIDE_POWER * 312/435;
+
+    static final int LINEAR_SLIDE_MAX_POSITION = 2;
+    static final int LINEAR_SLIDE_MIN_POSITION = 0;
 
     static final int LINEAR_SLIDE_POSITION_0 = 50;
-    static final int LINEAR_SLIDE_POSITION_1 = 1600;
-    static final int LINEAR_SLIDE_POSITION_2 = 2800;
-    static final int LINEAR_SLIDE_POSITION_3 = 4000;
-
-    static final int LINEAR_SLIDE_MAX_POSITION = 3;
-    static final int LINEAR_SLIDE_MIN_POSITION = 0;
+    static final int LINEAR_SLIDE_POSITION_1 = 1500;
+    static final int LINEAR_SLIDE_POSITION_2 = 2600;
 
     static final double DRIVE_SPEED = -0.8;
     static final double LEFT_ARM_INITIAL_POSITION = 0.6;
@@ -43,26 +41,26 @@ public class CenterStageManual extends LinearOpMode {
     // motors for claw
 //    private Servo leftClaw = null;
 //    private Servo rightClaw = null;
+//    private Servo droneLauncher = null;
     EruditeUtils utilities = new EruditeUtils();
-
-    // expected final position for claw
-    // left position: 0.4
-    // right position: 0.55
 
     int linearLevel = 0; // level of linear slide
 
-    int[] levels = {
+    int[] leftLevels = {
             LINEAR_SLIDE_POSITION_0, LINEAR_SLIDE_POSITION_1,
-            LINEAR_SLIDE_POSITION_2, LINEAR_SLIDE_POSITION_3
-    }; // linear slide positions for each pole
+            LINEAR_SLIDE_POSITION_2
+    };
+    int[] rightLevels = {
+            utilities.convertSlideValues(LINEAR_SLIDE_POSITION_0),
+            utilities.convertSlideValues(LINEAR_SLIDE_POSITION_1),
+            utilities.convertSlideValues(LINEAR_SLIDE_POSITION_2)
+    };
+
     boolean leftBumper = false;
     boolean rightBumper = false;
 
-
     public void LinearSlideUp() {
         if(linearLevel < LINEAR_SLIDE_MAX_POSITION){
-            leftSlide.setPower(LEFT_LINEAR_SLIDE_POWER_UP);
-            rightSlide.setPower(RIGHT_LINEAR_SLIDE_POWER_UP);
             linearLevel+=1;
         }
         rightBumper = false;
@@ -70,8 +68,6 @@ public class CenterStageManual extends LinearOpMode {
 
     public void LinearSlideDown() {
         if (linearLevel > LINEAR_SLIDE_MIN_POSITION){
-            leftSlide.setPower(LEFT_LINEAR_SLIDE_POWER_DOWN);
-            rightSlide.setPower(RIGHT_LINEAR_SLIDE_POWER_DOWN);
             linearLevel-=1;
         }
         leftBumper = false;
@@ -87,6 +83,7 @@ public class CenterStageManual extends LinearOpMode {
         leftBackMotor = hardwareMap.get(DcMotor.class, "LeftBackMotor");
         rightFrontMotor = hardwareMap.get(DcMotor.class, "RightFrontMotor");
         rightBackMotor = hardwareMap.get(DcMotor.class, "RightBackMotor");
+//        droneLauncher = hardwareMap.get(Servo.class, "Drone Launcher Servo");
 
         // prepare DCmotor direction
         utilities.centerStageInitialize(leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor, leftSlide, rightSlide);
@@ -129,8 +126,8 @@ public class CenterStageManual extends LinearOpMode {
                 LinearSlideDown();
             }
 
-            utilities.linearArmManual(leftSlide, linearLevel, levels);
-            utilities.linearArmManual(rightSlide, linearLevel, levels);
+            utilities.linearArmTestManual(leftSlide, linearLevel, leftLevels, LEFT_LINEAR_SLIDE_POWER);
+            utilities.linearArmTestManual(rightSlide, linearLevel, rightLevels, RIGHT_LINEAR_SLIDE_POWER);
 
 //            if (gamepad1.a) {
 //                telemetry.addData("GP2 Input", "Button A");
@@ -140,13 +137,20 @@ public class CenterStageManual extends LinearOpMode {
 //                telemetry.addData("GP2 Input", "Button B");
 //                utilities.claw(leftClaw, rightClaw, leftClawPosition, rightClawPosition, diffClaw);
 //            }
+//
+//            if (gamepad1.x) {
+//                droneLauncher.setPosition(0);
+//            }
+//            if (gamepad1.y) {
+//                droneLauncher.setPosition(1);
+//            }
 
             double max;
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral =  gamepad1.left_stick_x;
-            double yaw     =  gamepad1.right_stick_x;
+            double yaw     =  -gamepad1.right_stick_x / 2;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
