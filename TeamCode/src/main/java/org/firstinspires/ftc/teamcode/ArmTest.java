@@ -32,13 +32,13 @@ public class ArmTest extends LinearOpMode {
         while (opModeIsActive()) {
             boolean finger = false;
             if(gamepad1.a) {
-                rightArm.setPosition(0.02);
-                leftArm.setPosition(0.99);
+                rightArm.setPosition(0);
+                leftArm.setPosition(0.985);
 
             }
             if(gamepad1.b) {
-                rightArm.setPosition(0.88);
-                leftArm.setPosition(0.13);
+                rightArm.setPosition(0.75);
+                leftArm.setPosition(0.23);
 
             }
             telemetry.update();

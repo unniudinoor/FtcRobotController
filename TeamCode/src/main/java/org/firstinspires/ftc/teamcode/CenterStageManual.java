@@ -15,7 +15,7 @@ public class CenterStageManual extends LinearOpMode {
     static final int LINEAR_SLIDE_MAX_POSITION = 2;
     static final int LINEAR_SLIDE_MIN_POSITION = 0;
 
-    static final int LINEAR_SLIDE_POSITION_0 = 50;
+    static final int LINEAR_SLIDE_POSITION_0 = 0;
     static final int LINEAR_SLIDE_POSITION_1 = 1500;
     static final int LINEAR_SLIDE_POSITION_2 = 2600;
 
@@ -39,9 +39,11 @@ public class CenterStageManual extends LinearOpMode {
     private DcMotor rightSlide = null;
 
     // motors for claw
-//    private Servo leftClaw = null;
-//    private Servo rightClaw = null;
-//    private Servo droneLauncher = null;
+    private Servo leftArm = null;
+    private Servo rightArm = null;
+    private Servo leftClaw = null;
+    private Servo rightClaw = null;
+    private Servo droneLauncher = null;
     EruditeUtils utilities = new EruditeUtils();
 
     int linearLevel = 0; // level of linear slide
@@ -77,19 +79,28 @@ public class CenterStageManual extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
         rightSlide = hardwareMap.get(DcMotor.class, "RightLinearSlideMotor");
         leftSlide = hardwareMap.get(DcMotor.class, "LeftLinearSlideMotor");
-//        leftClaw = hardwareMap.get(Servo.class, "LeftClaw Servo");
-//        rightClaw = hardwareMap.get(Servo.class, "RightClaw Servo");
+
+        leftArm = hardwareMap.get(Servo.class, "LeftArm Servo");
+        rightArm = hardwareMap.get(Servo.class, "RightArm Servo");
+
+        leftClaw = hardwareMap.get(Servo.class, "LeftClaw Servo");
+        rightClaw = hardwareMap.get(Servo.class, "RightClaw Servo");
+
         leftFrontMotor = hardwareMap.get(DcMotor.class, "LeftFrontMotor");
         leftBackMotor = hardwareMap.get(DcMotor.class, "LeftBackMotor");
         rightFrontMotor = hardwareMap.get(DcMotor.class, "RightFrontMotor");
         rightBackMotor = hardwareMap.get(DcMotor.class, "RightBackMotor");
-//        droneLauncher = hardwareMap.get(Servo.class, "Drone Launcher Servo");
+
+        droneLauncher = hardwareMap.get(Servo.class, "Drone Launcher Servo");
 
         // prepare DCmotor direction
         utilities.centerStageInitialize(leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor, leftSlide, rightSlide);
 
-//        leftClaw.setDirection(Servo.Direction.FORWARD);
-//        rightClaw.setDirection(Servo.Direction.FORWARD);
+        leftClaw.setDirection(Servo.Direction.FORWARD);
+        rightClaw.setDirection(Servo.Direction.FORWARD);
+
+        leftArm.setDirection(Servo.Direction.FORWARD);
+        rightArm.setDirection(Servo.Direction.FORWARD);
 
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -129,22 +140,32 @@ public class CenterStageManual extends LinearOpMode {
             utilities.linearArmTestManual(leftSlide, linearLevel, leftLevels, LEFT_LINEAR_SLIDE_POWER);
             utilities.linearArmTestManual(rightSlide, linearLevel, rightLevels, RIGHT_LINEAR_SLIDE_POWER);
 
-//            if (gamepad1.a) {
-//                telemetry.addData("GP2 Input", "Button A");
-//                utilities.claw(leftClaw, rightClaw, leftClawPosition, rightClawPosition, 0);
-//            }
-//            else if (gamepad1.b){
-//                telemetry.addData("GP2 Input", "Button B");
-//                utilities.claw(leftClaw, rightClaw, leftClawPosition, rightClawPosition, diffClaw);
-//            }
-//
-//            if (gamepad1.x) {
-//                droneLauncher.setPosition(0);
-//            }
-//            if (gamepad1.y) {
-//                droneLauncher.setPosition(1);
-//            }
+            if (gamepad1.a) {
+                leftClaw.setPosition(0.075);
+                rightClaw.setPosition(0.425);
+            }
+            else if (gamepad1.b){
+                leftClaw.setPosition(0.3);
+                rightClaw.setPosition(0.15);
+            }
 
+            if(gamepad1.x) {
+                rightArm.setPosition(0);
+                leftArm.setPosition(0.985);
+
+            }
+            else if(gamepad1.y) {
+                rightArm.setPosition(0.75);
+                leftArm.setPosition(0.23);
+
+            }
+
+            if (gamepad1.right_trigger > 0.5) {
+                droneLauncher.setPosition(0);
+            }
+            else if (gamepad1.left_trigger > 0.5) {
+                droneLauncher.setPosition(1);
+            }
             double max;
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
