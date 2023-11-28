@@ -48,6 +48,11 @@ public class EruditeUtils {
         slideMotor.setTargetPosition(levels[linearLevel]);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
+    public void linearArmCenterStage(DcMotor slideMotor, int pos, double power){
+        slideMotor.setPower(power);
+        slideMotor.setTargetPosition(pos);
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
 //    public void linearArmAutonomous(DcMotor slideMotor, int linearLevel, int [] levels){
 //        slideMotor.setPower(0.8);
 //        slideMotor.setTargetPosition(levels[linearLevel]);
