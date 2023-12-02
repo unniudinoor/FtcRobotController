@@ -2,12 +2,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name="CenterStageManualV2")
-public class CenterStageManualV2 extends LinearOpMode {
+@TeleOp(name="CenterStageManualV3")
+public class CenterStageManualV3 extends LinearOpMode {
 
     static final double LEFT_LINEAR_SLIDE_POWER = 0.75;
     static final double RIGHT_LINEAR_SLIDE_POWER = LEFT_LINEAR_SLIDE_POWER * 312/435;
@@ -15,7 +16,7 @@ public class CenterStageManualV2 extends LinearOpMode {
     static final int LINEAR_SLIDE_MAX_POSITION = 2;
     static final int LINEAR_SLIDE_MIN_POSITION = 0;
 
-    static final int LINEAR_SLIDE_POSITION_0 = 30;
+    static final int LINEAR_SLIDE_POSITION_0 = 100;
     static final int LINEAR_SLIDE_POSITION_1 = 1500;
     static final int LINEAR_SLIDE_POSITION_2 = 2600;
 
@@ -23,17 +24,15 @@ public class CenterStageManualV2 extends LinearOpMode {
     static final double RIGHT_CLAW_INITIAL_POSITION = 0.425;
     static final double CLAW_RETRACT_DIFF = 0.15;
 
-    static final double LEFT_ARM_BOTTOM_POSITION = 0.21;
-    static final double RIGHT_ARM_BOTTOM_POSITION = 0.77;
+    static final double LEFT_ARM_BOTTOM_POSITION = 0.19;
+    static final double RIGHT_ARM_BOTTOM_POSITION = 0.79;
     static final double ARM_DIFF = 0.69;
 
-    static final int INCREMENT = 100;
-
-    static final double DRIVE_SPEED = -0.8;
+    static final double DRIVE_SPEED = -0.6;
 
 
     private final ElapsedTime runtime = new ElapsedTime();
-
+    private DistanceSensor sensorRange = null;
     // motors for the wheels
     private DcMotor leftFrontMotor = null;
     private DcMotor leftBackMotor = null;
@@ -125,11 +124,31 @@ public class CenterStageManualV2 extends LinearOpMode {
         runtime.reset();
 
         double driveSensitivity = DRIVE_SPEED;
+        boolean arm_up = false;
 
 
         while (opModeIsActive()) {
             boolean finger = false;
 
+            if(gamepad1.right_bumper) {
+                driveSensitivity = -0.6;
+            }
+            if(gamepad1.left_bumper) {
+                driveSensitivity = -0.4;
+            }
+
+            if (gamepad1.a) {
+                droneLauncher.setPosition(0);
+            }
+            else if (gamepad1.b) {
+                droneLauncher.setPosition(1);
+            }
+            if (gamepad1.x) {
+                arm_up = true;
+            }
+            if (gamepad1.y) {
+                arm_up = false;
+            }
             if (gamepad2.right_bumper) {
                 rightBumper = true;
             }
@@ -154,12 +173,37 @@ public class CenterStageManualV2 extends LinearOpMode {
                 }
             }
             if(leftSlide.getCurrentPosition() <= 100 && linearLevel == 0){
-                rightArm.setPosition(RIGHT_ARM_BOTTOM_POSITION);
-                leftArm.setPosition(LEFT_ARM_BOTTOM_POSITION);
+                if(arm_up){
+                    rightArm.setPosition(RIGHT_ARM_BOTTOM_POSITION - 0.1);
+                    leftArm.setPosition(LEFT_ARM_BOTTOM_POSITION + 0.1);
+                }
+                else {
+                    rightArm.setPosition(RIGHT_ARM_BOTTOM_POSITION);
+                    leftArm.setPosition(LEFT_ARM_BOTTOM_POSITION);
+                }
             }
-
-            utilities.linearArmCenterStage(leftSlide, currentPosLeftSlide, LEFT_LINEAR_SLIDE_POWER);
-            utilities.linearArmCenterStage(rightSlide, currentPosRightSlide, LEFT_LINEAR_SLIDE_POWER);
+            if(gamepad2.y){
+                leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            }
+            if(linearLevel == 0 && leftSlide.getCurrentPosition() <= 300 && rightSlide.getCurrentPosition() <= 300){
+                leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                leftSlide.setPower(0);
+                rightSlide.setPower(0);
+                if(gamepad2.left_trigger > 0.5){
+                    leftSlide.setPower(-0.3);
+                    rightSlide.setPower(-0.3);
+                }
+                if(gamepad2.right_trigger > 0.5){
+                    leftSlide.setPower(0);
+                    rightSlide.setPower(0);
+                }
+            }
+            else {
+                utilities.linearArmCenterStage(leftSlide, currentPosLeftSlide, LEFT_LINEAR_SLIDE_POWER);
+                utilities.linearArmCenterStage(rightSlide, currentPosRightSlide, LEFT_LINEAR_SLIDE_POWER);
+            }
 
             if (gamepad2.a) {
                 leftClaw.setPosition(LEFT_CLAW_INITIAL_POSITION);
@@ -170,26 +214,6 @@ public class CenterStageManualV2 extends LinearOpMode {
                 rightClaw.setPosition(RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
             }
 
-            if (gamepad2.right_trigger > 0.5) {
-                rt = true;
-            }
-            if (gamepad2.right_trigger < 0.5 && rt) {
-                currentPosLeftSlide += INCREMENT;
-                currentPosLeftSlide = currentPosLeftSlide > leftLevels[2] ? leftLevels[2] : currentPosLeftSlide;
-                currentPosRightSlide += INCREMENT;
-                currentPosRightSlide = currentPosRightSlide > rightLevels[2] ? rightLevels[2] : currentPosRightSlide;
-                rt = false;
-            }
-            if (gamepad2.left_trigger > 0.5) {
-                lt = true;
-            }
-            if (gamepad2.left_trigger < 0.5 && lt) {
-                currentPosLeftSlide -= INCREMENT;
-                currentPosLeftSlide = currentPosLeftSlide < leftLevels[0] ? leftLevels[0] : currentPosLeftSlide;
-                currentPosRightSlide -= INCREMENT;
-                currentPosRightSlide = currentPosRightSlide < rightLevels[0] ? rightLevels[0] : currentPosRightSlide;
-                lt = false;
-            }
 
             telemetry.addData("Left Pos", leftSlide.getCurrentPosition());
             telemetry.addData("Right Pos", rightSlide.getCurrentPosition());
