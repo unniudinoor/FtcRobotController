@@ -27,9 +27,7 @@ public class CenterStageManualV3 extends LinearOpMode {
     static final double RIGHT_ARM_BOTTOM_POSITION = 0.79;
     static final double ARM_DIFF = 0.69;
 
-    static final int INCREMENT = 100;
-
-    static final double DRIVE_SPEED = -0.5;
+    static final double DRIVE_SPEED = -0.6;
 
 
     private final ElapsedTime runtime = new ElapsedTime();
@@ -132,10 +130,10 @@ public class CenterStageManualV3 extends LinearOpMode {
             boolean finger = false;
 
             if(gamepad1.right_bumper) {
-                driveSensitivity = -0.5;
+                driveSensitivity = -0.6;
             }
             if(gamepad1.left_bumper) {
-                driveSensitivity = -0.2;
+                driveSensitivity = -0.4;
             }
 
             if (gamepad1.a) {
@@ -187,7 +185,7 @@ public class CenterStageManualV3 extends LinearOpMode {
                 leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
-            if(linearLevel == 0 && leftSlide.getCurrentPosition() <= 300){
+            if(linearLevel == 0 && leftSlide.getCurrentPosition() <= 300 && rightSlide.getCurrentPosition() <= 300){
                 leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 leftSlide.setPower(0);
