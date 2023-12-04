@@ -5,9 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 @Autonomous(name="CenterStageAuton", group="Robot")
@@ -24,7 +26,8 @@ public class CenterStageAuton extends LinearOpMode {
     private Servo leftClaw = null;
     private Servo rightClaw = null;
     private Servo droneLauncher = null;
-    private ColorSensor color_sensor = null;
+    private DistanceSensor sensorRange = null;
+//    private ColorSensor color_sensor = null;
     EruditeUtils Util = new EruditeUtils();
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -36,8 +39,7 @@ public class CenterStageAuton extends LinearOpMode {
     static final int LINEAR_SLIDE_MIN_POSITION = 0;
 
     static final int LINEAR_SLIDE_POSITION_0 = 100;
-    static final int LINEAR_SLIDE_POSITION_1 = 800;
-    static final int LINEAR_SLIDE_POSITION_2 = 1700;
+    static final int LINEAR_SLIDE_POSITION_2 = 1500;
     static final int LINEAR_SLIDE_POSITION_3 = 2600;
 
     static final double LEFT_CLAW_INITIAL_POSITION = 0.21;
@@ -48,7 +50,7 @@ public class CenterStageAuton extends LinearOpMode {
     static final double RIGHT_ARM_BOTTOM_POSITION = 0.79;
     static final double ARM_DIFF = 0.69;
 
-    static final double DRIVE_SPEED = -0.6;
+    static final double DRIVE_SPEED = 0.5;
 
     @Override
     public void runOpMode() {
@@ -64,7 +66,8 @@ public class CenterStageAuton extends LinearOpMode {
         leftBackMotor = hardwareMap.get(DcMotor.class, "LeftBackMotor");
         rightFrontMotor = hardwareMap.get(DcMotor.class, "RightFrontMotor");
         rightBackMotor = hardwareMap.get(DcMotor.class, "RightBackMotor");
-        color_sensor = hardwareMap.get(ColorSensor.class, "Color Sensor");
+        droneLauncher = hardwareMap.get(Servo.class, "Drone Launcher Servo");
+        sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
 
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         leftBackMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -80,14 +83,7 @@ public class CenterStageAuton extends LinearOpMode {
         rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-
-
-
         DcMotor[] motors = {leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor};
-        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
-        // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
-        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
@@ -96,63 +92,100 @@ public class CenterStageAuton extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        leftFrontMotor.setPower(DRIVE_SPEED);
+        rightFrontMotor.setPower(DRIVE_SPEED);
+        leftBackMotor.setPower(DRIVE_SPEED);
+        rightBackMotor.setPower(DRIVE_SPEED);
+
+        leftFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition());
+        leftBackMotor.setTargetPosition(leftFrontMotor.getCurrentPosition());
+        rightFrontMotor.setTargetPosition(leftFrontMotor.getCurrentPosition());
+        rightBackMotor.setTargetPosition(leftFrontMotor.getCurrentPosition());
+
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         runtime.reset();
         while (opModeIsActive()) {
 
             //insert code to detect object
-            Util.encoderDriveForward(10, motors);
-            sleep(100);
-            Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
-            Util.servos(leftClaw, rightClaw, LEFT_CLAW_INITIAL_POSITION + CLAW_RETRACT_DIFF, RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
-            Util.encoderDriveForward(4, motors);
-            sleep(100);
-            Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION, RIGHT_ARM_BOTTOM_POSITION);
-            Util.encoderDriveForward(2, motors);
-            sleep(100);
-            Util.servos(leftClaw, rightClaw, LEFT_CLAW_INITIAL_POSITION, RIGHT_CLAW_INITIAL_POSITION);
-            sleep(1000);
-            Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
-            sleep(100);
             Util.encoderDriveForward(15, motors);
-            sleep(100);
-            Util.encoderDriveRight(10, motors);
-            sleep(100);
-            Util.encoderRotate(90, motors);
-            sleep(100);
-            Util.encoderDriveLeft(5, motors);
-            sleep(100);
-            Util.encoderDriveBackward(5, motors);
-            sleep(100);
-            Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION, RIGHT_ARM_BOTTOM_POSITION);
-            sleep(100);
-            leftClaw.setPosition(LEFT_CLAW_INITIAL_POSITION + CLAW_RETRACT_DIFF);
-            sleep(100);
+            sleep(500);
             Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
-            sleep(100);
+            sleep(500);
+            Util.servos(leftClaw, rightClaw, LEFT_CLAW_INITIAL_POSITION + CLAW_RETRACT_DIFF, RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
+            sleep(500);
+            Util.encoderDriveBackward(5, motors);
+            sleep(500);
+            Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION, RIGHT_ARM_BOTTOM_POSITION);
+            sleep(500);
+            Util.encoderDriveBackward(2, motors);
+            sleep(500);
+            Util.servos(leftClaw, rightClaw, LEFT_CLAW_INITIAL_POSITION, RIGHT_CLAW_INITIAL_POSITION);
 
+            sleep(500);
+            Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
+            sleep(500);
+            Util.encoderDriveForward(20, motors);
+            sleep(500);
+            Util.encoderDriveRight(15, motors);
+            sleep(500);
+            Util.encoderRotate(-103, motors);
+            sleep(500);
+            Util.encoderDriveBackward(8, motors);
+            sleep(500);
+            Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION, RIGHT_ARM_BOTTOM_POSITION);
+            sleep(500);
+            leftClaw.setPosition(LEFT_CLAW_INITIAL_POSITION + CLAW_RETRACT_DIFF);
+            sleep(500);
+            Util.encoderDriveForward(5, motors);
+            sleep(500);
+            Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
+            sleep(500);
 
-            while (color_sensor.red() < 150 && (color_sensor.red() > color_sensor.blue() + color_sensor.green())){
-                leftFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                leftBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                rightBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            Util.encoderDriveForward(33, motors);
 
-                leftFrontMotor.setPower(0.5);
-                leftBackMotor.setPower(0.5);
-                rightFrontMotor.setPower(0.5);
-                rightBackMotor.setPower(0.5);
+            Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + ARM_DIFF, RIGHT_ARM_BOTTOM_POSITION - ARM_DIFF);
+            sleep(500);
+            Util.linearArmAutonCS(leftSlide, rightSlide, LINEAR_SLIDE_POSITION_2);
+            sleep(500);
+            leftFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            leftBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            rightBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            while (sensorRange.getDistance(DistanceUnit.CM) > 2.5){
+                leftFrontMotor.setPower(0.3);
+                leftBackMotor.setPower(0.3);
+                rightFrontMotor.setPower(0.3);
+                rightBackMotor.setPower(0.3);
             }
             leftFrontMotor.setPower(0);
             leftBackMotor.setPower(0);
             rightFrontMotor.setPower(0);
             rightBackMotor.setPower(0);
 
+            leftFrontMotor.setPower(DRIVE_SPEED);
+            rightFrontMotor.setPower(DRIVE_SPEED);
+            leftBackMotor.setPower(DRIVE_SPEED);
+            rightBackMotor.setPower(DRIVE_SPEED);
 
-            Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + ARM_DIFF, RIGHT_ARM_BOTTOM_POSITION - ARM_DIFF);
-            Util.linearArmAutonCS(leftSlide, rightSlide, LINEAR_SLIDE_POSITION_2);
+            leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
             Util.servos(leftClaw, rightClaw, LEFT_CLAW_INITIAL_POSITION + CLAW_RETRACT_DIFF, RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
-
-
+            sleep(500);
+            Util.encoderDriveBackward(10, motors);
+            sleep(500);
+            Util.linearArmAutonCS(leftSlide, rightSlide, LINEAR_SLIDE_POSITION_0);
+            sleep(500);
+            Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
+            sleep(500);
+            Util.encoderDriveLeft(30, motors);
+            Util.encoderDriveForward(20, motors);
             break;
 
         }
