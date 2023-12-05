@@ -43,6 +43,15 @@ public class EruditeUtils {
         slideMotor.setTargetPosition(levels[linearLevel]);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
+    public void linearArmAutonCS(DcMotor leftSlide, DcMotor rightSlide, int position){
+        leftSlide.setPower(0.8);
+        rightSlide.setPower(0.8);
+        leftSlide.setTargetPosition(position);
+        rightSlide.setTargetPosition(position);
+        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while (leftSlide.isBusy() || rightSlide.isBusy());
+    }
     public void linearArmTestManual(DcMotor slideMotor, int linearLevel, int [] levels, double power){
         slideMotor.setPower(power);
         slideMotor.setTargetPosition(levels[linearLevel]);
@@ -53,17 +62,16 @@ public class EruditeUtils {
         slideMotor.setTargetPosition(pos);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
-//    public void linearArmAutonomous(DcMotor slideMotor, int linearLevel, int [] levels){
-//        slideMotor.setPower(0.8);
-//        slideMotor.setTargetPosition(levels[linearLevel]);
-//        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        while (slideMotor.isBusy());
-//    }
     public void linearArmAutonomous(DcMotor slideMotor, int position){
         slideMotor.setPower(0.8);
         slideMotor.setTargetPosition(position);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         while (slideMotor.isBusy());
+    }
+
+    public void servos (Servo left, Servo right, double leftPos, double rightPos){
+        left.setPosition(leftPos);
+        right.setPosition(rightPos);
     }
 
     public Integer coneSleeve (ColorSensor color_sensor) {
