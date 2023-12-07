@@ -15,9 +15,19 @@ public class CenterStageManualV2 extends LinearOpMode {
     static final int LINEAR_SLIDE_MAX_POSITION = 2;
     static final int LINEAR_SLIDE_MIN_POSITION = 0;
 
-    static final int LINEAR_SLIDE_POSITION_0 = 0;
+    static final int LINEAR_SLIDE_POSITION_0 = 30;
     static final int LINEAR_SLIDE_POSITION_1 = 1500;
     static final int LINEAR_SLIDE_POSITION_2 = 2600;
+
+    static final double LEFT_CLAW_INITIAL_POSITION = 0.21;
+    static final double RIGHT_CLAW_INITIAL_POSITION = 0.425;
+    static final double CLAW_RETRACT_DIFF = 0.15;
+
+    static final double LEFT_ARM_BOTTOM_POSITION = 0.21;
+    static final double RIGHT_ARM_BOTTOM_POSITION = 0.77;
+    static final double ARM_DIFF = 0.69;
+
+    static final int INCREMENT = 100;
 
     static final double DRIVE_SPEED = -0.8;
 
@@ -126,9 +136,9 @@ public class CenterStageManualV2 extends LinearOpMode {
             if (!gamepad2.right_bumper && rightBumper) {
                 LinearSlideUp();
                 currentPosLeftSlide = leftLevels[linearLevel];
-                currentPosRightSlide = rightLevels[linearLevel];
-                rightArm.setPosition(0);
-                leftArm.setPosition(0.985);
+                currentPosRightSlide = leftLevels[linearLevel];
+                rightArm.setPosition(RIGHT_ARM_BOTTOM_POSITION - ARM_DIFF + 0.005);
+                leftArm.setPosition(LEFT_ARM_BOTTOM_POSITION + ARM_DIFF);
             }
 
             if (gamepad2.left_bumper) {
@@ -137,32 +147,36 @@ public class CenterStageManualV2 extends LinearOpMode {
             if (leftBumper && !gamepad2.left_bumper) {
                 LinearSlideDown();
                 currentPosLeftSlide = leftLevels[linearLevel];
-                currentPosRightSlide = rightLevels[linearLevel];
+                currentPosRightSlide = leftLevels[linearLevel];
                 if(linearLevel == 0){
-                    rightArm.setPosition(0.79);
-                    leftArm.setPosition(0.19);
+                    rightArm.setPosition(RIGHT_ARM_BOTTOM_POSITION - 0.2);
+                    leftArm.setPosition(LEFT_ARM_BOTTOM_POSITION + 0.2);
                 }
+            }
+            if(leftSlide.getCurrentPosition() <= 100 && linearLevel == 0){
+                rightArm.setPosition(RIGHT_ARM_BOTTOM_POSITION);
+                leftArm.setPosition(LEFT_ARM_BOTTOM_POSITION);
             }
 
             utilities.linearArmCenterStage(leftSlide, currentPosLeftSlide, LEFT_LINEAR_SLIDE_POWER);
-            utilities.linearArmCenterStage(rightSlide, currentPosRightSlide, RIGHT_LINEAR_SLIDE_POWER);
+            utilities.linearArmCenterStage(rightSlide, currentPosRightSlide, LEFT_LINEAR_SLIDE_POWER);
 
             if (gamepad2.a) {
-                leftClaw.setPosition(0.075);
-                rightClaw.setPosition(0.425);
+                leftClaw.setPosition(LEFT_CLAW_INITIAL_POSITION);
+                rightClaw.setPosition(RIGHT_CLAW_INITIAL_POSITION);
             }
             else if (gamepad2.b){
-                leftClaw.setPosition(0.25);
-                rightClaw.setPosition(0.25);
+                leftClaw.setPosition(LEFT_CLAW_INITIAL_POSITION + CLAW_RETRACT_DIFF);
+                rightClaw.setPosition(RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
             }
 
             if (gamepad2.right_trigger > 0.5) {
                 rt = true;
             }
             if (gamepad2.right_trigger < 0.5 && rt) {
-                currentPosLeftSlide += 100;
+                currentPosLeftSlide += INCREMENT;
                 currentPosLeftSlide = currentPosLeftSlide > leftLevels[2] ? leftLevels[2] : currentPosLeftSlide;
-                currentPosRightSlide += utilities.convertSlideValues(100);
+                currentPosRightSlide += INCREMENT;
                 currentPosRightSlide = currentPosRightSlide > rightLevels[2] ? rightLevels[2] : currentPosRightSlide;
                 rt = false;
             }
@@ -170,20 +184,21 @@ public class CenterStageManualV2 extends LinearOpMode {
                 lt = true;
             }
             if (gamepad2.left_trigger < 0.5 && lt) {
-                currentPosLeftSlide -= 100;
+                currentPosLeftSlide -= INCREMENT;
                 currentPosLeftSlide = currentPosLeftSlide < leftLevels[0] ? leftLevels[0] : currentPosLeftSlide;
-                currentPosRightSlide -= utilities.convertSlideValues(100);
+                currentPosRightSlide -= INCREMENT;
                 currentPosRightSlide = currentPosRightSlide < rightLevels[0] ? rightLevels[0] : currentPosRightSlide;
                 lt = false;
             }
 
+            telemetry.addData("Left Pos", leftSlide.getCurrentPosition());
+            telemetry.addData("Right Pos", rightSlide.getCurrentPosition());
             if (gamepad1.a) {
                 droneLauncher.setPosition(0);
             }
             else if (gamepad1.b) {
                 droneLauncher.setPosition(1);
             }
-
 
             double max;
 
