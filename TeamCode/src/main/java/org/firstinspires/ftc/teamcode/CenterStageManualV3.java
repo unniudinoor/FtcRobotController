@@ -28,7 +28,7 @@ public class CenterStageManualV3 extends LinearOpMode {
     static final double RIGHT_ARM_BOTTOM_POSITION = 0.79;
     static final double ARM_DIFF = 0.69;
 
-    static final double DRIVE_SPEED = -0.6;
+    static final double DRIVE_SPEED = -0.67;
 
 
     private final ElapsedTime runtime = new ElapsedTime();
@@ -229,7 +229,7 @@ public class CenterStageManualV3 extends LinearOpMode {
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral =  gamepad1.left_stick_x;
-            double yaw     =  -gamepad1.right_stick_x * 0.5;
+            double yaw     =  -gamepad1.right_stick_x * 0.6;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
