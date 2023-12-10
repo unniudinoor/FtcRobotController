@@ -24,9 +24,10 @@ public class CenterStageManualV3 extends LinearOpMode {
     static final double RIGHT_CLAW_INITIAL_POSITION = 0.425;
     static final double CLAW_RETRACT_DIFF = 0.15;
 
-    static final double LEFT_ARM_BOTTOM_POSITION = 0.19;
-    static final double RIGHT_ARM_BOTTOM_POSITION = 0.79;
-    static final double ARM_DIFF = 0.69;
+    static final double LEFT_ARM_BOTTOM_POSITION = 0.150;
+    static final double RIGHT_ARM_BOTTOM_POSITION = 0.785;
+    static final double RIGHT_ARM_DIFF = 0.740;
+    static final double LEFT_ARM_DIFF = RIGHT_ARM_DIFF + 0.005  ;
 
     static final double DRIVE_SPEED = -0.67;
 
@@ -130,17 +131,11 @@ public class CenterStageManualV3 extends LinearOpMode {
         while (opModeIsActive()) {
             boolean finger = false;
 
-            if(gamepad1.right_bumper) {
-                driveSensitivity = -0.6;
-            }
-            if(gamepad1.left_bumper) {
-                driveSensitivity = -0.4;
-            }
 
-            if (gamepad1.a) {
+            if (gamepad1.dpad_up) {
                 droneLauncher.setPosition(0);
             }
-            else if (gamepad1.b) {
+            else if (gamepad1.dpad_down) {
                 droneLauncher.setPosition(1);
             }
             if (gamepad1.x) {
@@ -156,8 +151,8 @@ public class CenterStageManualV3 extends LinearOpMode {
                 LinearSlideUp();
                 currentPosLeftSlide = leftLevels[linearLevel];
                 currentPosRightSlide = leftLevels[linearLevel];
-                rightArm.setPosition(RIGHT_ARM_BOTTOM_POSITION - ARM_DIFF + 0.005);
-                leftArm.setPosition(LEFT_ARM_BOTTOM_POSITION + ARM_DIFF);
+                rightArm.setPosition(RIGHT_ARM_BOTTOM_POSITION - RIGHT_ARM_DIFF);
+                leftArm.setPosition(LEFT_ARM_BOTTOM_POSITION + LEFT_ARM_DIFF);
             }
 
             if (gamepad2.left_bumper) {
