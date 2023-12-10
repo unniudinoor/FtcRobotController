@@ -29,13 +29,9 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.google.blocks.ftcrobotcontroller.runtime.obsolete.VuforiaLocalizerAccess;
-import com.google.blocks.ftcrobotcontroller.runtime.obsolete.VuforiaLocalizerParametersAccess;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -59,7 +55,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
     // this is only used for Android Studio when using models in Assets.
-    private static final String TFOD_MODEL_ASSET = "model_20231205_001401.tflite";
+    private static final String TFOD_MODEL_ASSET = "model_blue.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
     //private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/CenterStage.tflite";
@@ -210,28 +206,22 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
             //telemetry.addData("objects", currentRecognitions.size());
             //telemetry.update();
             if (currentRecognitions.size() > 0) {
-                if (x > 0 && x < 190) {
-                    position = 1;
-                    //telemetry.addLine("left:" + position);
-                    telemetry.addData("left", position);
+                if (recognition.getRight() - recognition.getLeft() < 120) {
+                    if (x > 0 && x < 190) {
+                        position = 1;
+                        //telemetry.addLine("left:" + position);
+                        telemetry.addData("left", position);
 
 
+                    } else if (x >= 190 && x < 590) {
+                        position = 2;
+                        //telemetry.addData("middle",position);
+                        telemetry.addData("middle", position);
 
 
-                }
-
-                else if (x >= 190 && x < 590) {
-                    position = 2;
-                    //telemetry.addData("middle",position);
-                    telemetry.addData("middle",position);
-
-
+                    }
 
                 }
-
-
-
-
             }
 
 
