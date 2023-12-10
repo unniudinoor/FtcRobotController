@@ -187,15 +187,15 @@ public class AutonFarBlue extends LinearOpMode {
                     Util.encoderDriveForward(21, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION, RIGHT_ARM_BOTTOM_POSITION);
                     Util.encoderRotate(-100, motors);
-                    Util.encoderDriveBackward(2, motors);
+                    Util.encoderDriveBackward(6, motors);
                     sleep(100);
                     rightClaw.setPosition(RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
                     sleep(500);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
                     sleep(100);
                     Util.encoderDriveForward(10, motors);
-                    Util.encoderDriveRight(33, motors);
-                    Util.encoderDriveBackward(95, motors);
+//                    Util.encoderDriveRight(33, motors);
+//                    Util.encoderDriveBackward(95, motors);
                 } else if (new_position == 2) {
                     telemetry.addData("center", "2");
                     Util.servos(leftClaw, rightClaw, LEFT_CLAW_INITIAL_POSITION, RIGHT_CLAW_INITIAL_POSITION);
@@ -212,8 +212,8 @@ public class AutonFarBlue extends LinearOpMode {
                     Util.encoderDriveForward(9, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
                     Util.encoderRotate(-100, motors);
-                    Util.encoderDriveLeft(17, motors);
-                    Util.encoderDriveForward(85, motors);
+//                    Util.encoderDriveLeft(17, motors);
+//                    Util.encoderDriveForward(85, motors);
                 } else if (new_position == 3) {
                     Util.servos(leftClaw, rightClaw, LEFT_CLAW_INITIAL_POSITION, RIGHT_CLAW_INITIAL_POSITION);
                     sleep(500);
@@ -227,8 +227,8 @@ public class AutonFarBlue extends LinearOpMode {
                     sleep(200);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
                     Util.encoderDriveBackward(10, motors);
-                    Util.encoderDriveLeft(35, motors);
-                    Util.encoderDriveForward(100, motors);
+//                    Util.encoderDriveLeft(35, motors);
+//                    Util.encoderDriveForward(100, motors);
                 }
             } catch (Exception e) {
                 telemetry.addData("Error:", e.toString());

@@ -194,8 +194,8 @@ public class AutonFarRed extends LinearOpMode {
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
                     sleep(100);
                     Util.encoderDriveBackward(10, motors);
-                    Util.encoderDriveRight(35, motors);
-                    Util.encoderDriveForward(95, motors);
+//                    Util.encoderDriveRight(35, motors);
+//                    Util.encoderDriveForward(95, motors);
                 } else if (new_position == 2) {
                     telemetry.addData("center", "2");
                     Util.servos(leftClaw, rightClaw, LEFT_CLAW_INITIAL_POSITION, RIGHT_CLAW_INITIAL_POSITION);
@@ -211,8 +211,8 @@ public class AutonFarRed extends LinearOpMode {
                     Util.encoderDriveForward(9, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
                     Util.encoderRotate(100, motors);
-                    Util.encoderDriveRight(20, motors);
-                    Util.encoderDriveForward(90, motors);
+//                    Util.encoderDriveRight(20, motors);
+//                    Util.encoderDriveForward(90, motors);
                 } else if (new_position == 3) {
                     Util.servos(leftClaw, rightClaw, LEFT_CLAW_INITIAL_POSITION, RIGHT_CLAW_INITIAL_POSITION);
                     sleep(500);
@@ -226,8 +226,8 @@ public class AutonFarRed extends LinearOpMode {
                     sleep(200);
                     Util.encoderDriveForward(10, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
-                    Util.encoderDriveLeft(34.5, motors);
-                    Util.encoderDriveBackward(100, motors);
+//                    Util.encoderDriveLeft(34.5, motors);
+//                    Util.encoderDriveBackward(100, motors);
                 }
             } catch (Exception e) {
                 telemetry.addData("Error:", e.toString());
