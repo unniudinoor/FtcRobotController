@@ -186,7 +186,7 @@ public class AutonFarRed extends LinearOpMode {
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
                     Util.encoderDriveForward(20, motors);
                     Util.encoderRotate(-100, motors);
-                    Util.encoderDriveForward(5, motors);
+                    Util.encoderDriveForward(1, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION, RIGHT_ARM_BOTTOM_POSITION);
                     sleep(100);
                     rightClaw.setPosition(RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
@@ -202,7 +202,7 @@ public class AutonFarRed extends LinearOpMode {
                     sleep(500);
                     Util.encoderDriveForward(5, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
-                    Util.encoderDriveForward(17, motors);
+                    Util.encoderDriveForward(21, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION, RIGHT_ARM_BOTTOM_POSITION);
                     Util.encoderRotate(-200, motors);
                     sleep(100);
@@ -221,7 +221,7 @@ public class AutonFarRed extends LinearOpMode {
                     Util.encoderDriveForward(23, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION, RIGHT_ARM_BOTTOM_POSITION);
                     Util.encoderRotate(100, motors);
-                    Util.encoderDriveBackward(1, motors);
+                    Util.encoderDriveBackward(3, motors);
                     rightClaw.setPosition(RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
                     sleep(200);
                     Util.encoderDriveForward(10, motors);
