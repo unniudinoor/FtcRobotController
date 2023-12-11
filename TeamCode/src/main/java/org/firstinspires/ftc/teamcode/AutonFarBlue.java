@@ -183,7 +183,7 @@ public class AutonFarBlue extends LinearOpMode {
                     sleep(500);
                     Util.encoderDriveForward(5, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
-                    Util.encoderDriveRight(7, motors);
+                    Util.encoderDriveRight(3, motors);
                     Util.encoderDriveForward(21, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION, RIGHT_ARM_BOTTOM_POSITION);
                     Util.encoderRotate(-100, motors);
@@ -203,7 +203,7 @@ public class AutonFarBlue extends LinearOpMode {
                     Util.encoderDriveForward(5, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
                     Util.encoderDriveRight(7, motors);
-                    Util.encoderDriveForward(17.5, motors);
+                    Util.encoderDriveForward(21.5, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION, RIGHT_ARM_BOTTOM_POSITION);
                     Util.encoderRotate(-200, motors);
                     sleep(100);
@@ -219,7 +219,7 @@ public class AutonFarBlue extends LinearOpMode {
                     sleep(500);
                     Util.encoderDriveForward(3, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
-                    Util.encoderDriveRight(7, motors);
+                    Util.encoderDriveRight(11, motors);
                     Util.encoderDriveForward(26, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION, RIGHT_ARM_BOTTOM_POSITION);
                     Util.encoderRotate(100, motors);

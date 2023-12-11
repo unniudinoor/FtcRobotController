@@ -184,7 +184,7 @@ public class AutonCloseBlue extends LinearOpMode {
                     sleep(500);
                     Util.encoderDriveForward(5, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
-                    Util.encoderDriveLeft(28.5, motors);
+                    Util.encoderDriveLeft(24.5, motors);
                     Util.encoderDriveForward(23, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION, RIGHT_ARM_BOTTOM_POSITION);
                     Util.encoderRotate(100, motors);
@@ -202,7 +202,7 @@ public class AutonCloseBlue extends LinearOpMode {
                     leftBackMotor.setPower(0.5);
                     rightBackMotor.setPower(0.5);
 
-                    Util.encoderDriveBackward(13, motors);
+                    Util.encoderDriveBackward(19, motors);
 
                     Util.servos(leftClaw, rightClaw, LEFT_CLAW_INITIAL_POSITION + CLAW_RETRACT_DIFF, RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
                     sleep(500);
@@ -219,13 +219,13 @@ public class AutonCloseBlue extends LinearOpMode {
                     Util.encoderDriveForward(5, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
                     Util.encoderDriveLeft(3, motors);
-                    Util.encoderDriveForward(17.5, motors);
+                    Util.encoderDriveForward(21.5, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION, RIGHT_ARM_BOTTOM_POSITION);
                     Util.encoderRotate(-200, motors);
                     sleep(100);
                     rightClaw.setPosition(RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
                     sleep(500);
-                    Util.encoderDriveForward(7, motors);
+                    Util.encoderDriveForward(11, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION + 0.1, RIGHT_ARM_BOTTOM_POSITION - 0.1);
                     Util.encoderRotate(100, motors);
                     Util.encoderDriveLeft(15.5, motors);
@@ -237,7 +237,7 @@ public class AutonCloseBlue extends LinearOpMode {
                     leftBackMotor.setPower(0.5);
                     rightBackMotor.setPower(0.5);
 
-                    Util.encoderDriveBackward(42, motors);
+                    Util.encoderDriveBackward(44, motors);
 
                     Util.servos(leftClaw, rightClaw, LEFT_CLAW_INITIAL_POSITION + CLAW_RETRACT_DIFF, RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
                     sleep(500);
@@ -256,7 +256,7 @@ public class AutonCloseBlue extends LinearOpMode {
                     Util.encoderDriveForward(25, motors);
                     Util.encoderRotate(100, motors);
                     Util.servos(leftArm, rightArm, LEFT_ARM_BOTTOM_POSITION, RIGHT_ARM_BOTTOM_POSITION);
-                    Util.encoderDriveBackward(9, motors);
+                    Util.encoderDriveBackward(13, motors);
                     sleep(100);
                     rightClaw.setPosition(RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
                     sleep(500);
@@ -270,7 +270,7 @@ public class AutonCloseBlue extends LinearOpMode {
                     rightFrontMotor.setPower(0.5);
                     leftBackMotor.setPower(0.5);
                     rightBackMotor.setPower(0.5);
-                    Util.encoderDriveBackward(14, motors);
+                    Util.encoderDriveBackward(16, motors);
                     Util.servos(leftClaw, rightClaw, LEFT_CLAW_INITIAL_POSITION + CLAW_RETRACT_DIFF, RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
                     sleep(500);
                     leftFrontMotor.setPower(1);
