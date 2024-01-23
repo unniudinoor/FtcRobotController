@@ -232,10 +232,10 @@ public class EruditeUtils {
 
 
         // Determine new target position, and pass to motor controller
-        newTarget[0] = motors[0].getCurrentPosition() + (int)(2 * degrees * 13.5 * 3.14159 * COUNTS_PER_INCH / 360);
-        newTarget[1] = motors[1].getCurrentPosition() - (int)(2 * degrees * 13.5 * 3.14159 * COUNTS_PER_INCH / 360);
-        newTarget[2] = motors[2].getCurrentPosition() + (int)(2 * degrees * 13.5 * 3.14159 * COUNTS_PER_INCH / 360);
-        newTarget[3] = motors[3].getCurrentPosition() - (int)(2 * degrees * 13.5 * 3.14159 * COUNTS_PER_INCH / 360);
+        newTarget[0] = motors[0].getCurrentPosition() + (int)(2 * degrees * 16.5 * 3.14159 * COUNTS_PER_INCH / 360);
+        newTarget[1] = motors[1].getCurrentPosition() - (int)(2 * degrees * 16.5 * 3.14159 * COUNTS_PER_INCH / 360);
+        newTarget[2] = motors[2].getCurrentPosition() + (int)(2 * degrees * 16.5 * 3.14159 * COUNTS_PER_INCH / 360);
+        newTarget[3] = motors[3].getCurrentPosition() - (int)(2 * degrees * 16.5 * 3.14159 * COUNTS_PER_INCH / 360);
 
         for (int i = 0; i < 4; i+=1){
             motors[i].setTargetPosition(newTarget[i]);
