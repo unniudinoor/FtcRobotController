@@ -12,8 +12,8 @@ public class AxonTest extends LinearOpMode {
 
     //  static final double LEFT_ARM_BOTTOM_POSITION = 0.130;
 //    static final double RIGHT_ARM_BOTTOM_POSITION = 0.840;
-    static final double ARM_TOP_POSITION = 0.15;
-    static final double ARM_BOTTOM_POSITION = 0.74;
+    static final double ARM_TOP_POSITION = 0;
+    static final double ARM_BOTTOM_POSITION = 0.61;
 
     static final double LEFT_CLAW_INITIAL_POSITION = 0.21;
     static final double RIGHT_CLAW_INITIAL_POSITION = 0.425;

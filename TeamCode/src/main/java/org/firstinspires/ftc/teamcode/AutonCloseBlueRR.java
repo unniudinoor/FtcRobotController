@@ -25,7 +25,7 @@ public class AutonCloseBlueRR extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
-    private static final String TFOD_MODEL_ASSET = "model_red.tflite";
+    private static final String TFOD_MODEL_ASSET = "model_blue.tflite";
 
     private static final String[] LABELS = {
             "Beacon 1",
@@ -61,11 +61,12 @@ public class AutonCloseBlueRR extends LinearOpMode {
     static final double RIGHT_CLAW_INITIAL_POSITION = 0.425;
     static final double CLAW_RETRACT_DIFF = 0.15;
 
-    static final double ARM_BOTTOM_POSITION = 0.74;
-    static final double ARM_TOP_POSITION = 0.15;
+    static final double ARM_BOTTOM_POSITION = 0.61;
+    static final double ARM_TOP_POSITION = 0;
 
     static final double DRIVE_SPEED = 0.8;
 
+    double t = 0;
 
     @Override
     public void runOpMode() {
@@ -94,7 +95,7 @@ public class AutonCloseBlueRR extends LinearOpMode {
         rightClaw.setPosition(RIGHT_CLAW_INITIAL_POSITION);
 
         Trajectory leftTraj1 = drive.trajectoryBuilder(new Pose2d())
-                .lineToSplineHeading(new Pose2d(-29, -33, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(-33.25, -33, Math.toRadians(90)))
                 .build();
 
         Trajectory leftTraj2 = drive.trajectoryBuilder(leftTraj1.end())
@@ -102,40 +103,55 @@ public class AutonCloseBlueRR extends LinearOpMode {
                 .build();
 
         Trajectory leftTraj3 = drive.trajectoryBuilder(leftTraj2.end())
-                .lineToSplineHeading(new Pose2d(-23, -28, Math.toRadians(-90)))
+                .lineToSplineHeading(new Pose2d(-22.25, -28, Math.toRadians(-90)))
                 .build();
 
         Trajectory leftTraj4 = drive.trajectoryBuilder(leftTraj3.end())
-                .forward(12)
+                .forward(9)
                 .build();
 
 
         Trajectory leftTraj5 = drive.trajectoryBuilder(leftTraj4.end())
-                .lineToConstantHeading(new Vector2d(-23, -33))
+                .lineToConstantHeading(new Vector2d(-22.25, -33))
                 .build();
 
-
-        Trajectory centerTraj1 = drive.trajectoryBuilder(new Pose2d())
-                .lineToConstantHeading(new Vector2d(-20,-12))
+        Trajectory leftTraj6 = drive.trajectoryBuilder(leftTraj5.end())
+                .strafeLeft(21)
                 .build();
 
-        Trajectory centerTraj2 = drive.trajectoryBuilder(centerTraj1.end())
-                .lineToSplineHeading(new Pose2d(-26, -2, Math.toRadians(-180.00)))
-                .build();
-
-        Trajectory centerTraj3 = drive.trajectoryBuilder(centerTraj2.end())
-                .lineToSplineHeading(new Pose2d(-28, -30, Math.toRadians(-90)))
-                .build();
-
-        Trajectory centerTraj4 = drive.trajectoryBuilder(centerTraj3.end())
+        Trajectory leftTraj7 = drive.trajectoryBuilder(leftTraj6.end())
                 .forward(10)
                 .build();
 
 
-        Trajectory centerTraj5 = drive.trajectoryBuilder(centerTraj4.end())
-                .lineToConstantHeading(new Vector2d(-26, -28))
+        Trajectory centerTraj1 = drive.trajectoryBuilder(new Pose2d())
+                .lineToConstantHeading(new Vector2d(-19.25,-12))
                 .build();
 
+        Trajectory centerTraj2 = drive.trajectoryBuilder(centerTraj1.end())
+                .lineToSplineHeading(new Pose2d(-25.25, -2, Math.toRadians(-180.00)))
+                .build();
+
+        Trajectory centerTraj3 = drive.trajectoryBuilder(centerTraj2.end())
+                .lineToSplineHeading(new Pose2d(-27.25, -30, Math.toRadians(-90)))
+                .build();
+
+        Trajectory centerTraj4 = drive.trajectoryBuilder(centerTraj3.end())
+                .forward(7)
+                .build();
+
+
+        Trajectory centerTraj5 = drive.trajectoryBuilder(centerTraj4.end())
+                .back(5)
+                .build();
+
+        Trajectory centerTraj6 = drive.trajectoryBuilder(centerTraj5.end())
+                .strafeLeft(26)
+                .build();
+
+        Trajectory centerTraj7 = drive.trajectoryBuilder(centerTraj6.end())
+                .forward(10)
+                .build();
 
         Trajectory rightTraj1 = drive.trajectoryBuilder(new Pose2d())
                 .lineToSplineHeading(new Pose2d(-31, -8, Math.toRadians(90)))
@@ -150,11 +166,19 @@ public class AutonCloseBlueRR extends LinearOpMode {
                 .build();
 
         Trajectory rightTraj4 = drive.trajectoryBuilder(rightTraj3.end())
-                .forward(10)
+                .forward(7)
                 .build();
 
         Trajectory rightTraj5 = drive.trajectoryBuilder(rightTraj4.end())
                 .lineToConstantHeading(new Vector2d(-36, -28))
+                .build();
+
+        Trajectory rightTraj6 = drive.trajectoryBuilder(rightTraj5.end())
+                .strafeLeft(34)
+                .build();
+
+        Trajectory rightTraj7 = drive.trajectoryBuilder(rightTraj6.end())
+                .forward(10)
                 .build();
 
 
@@ -198,42 +222,51 @@ public class AutonCloseBlueRR extends LinearOpMode {
             telemetry.addData("Works", "1");
             try {
                 int new_position = 3;
-//                int current_position = 0;
-//                int counter = 0;
-//                //insert code to detect object
-//                sleep(4500);
-//                while (!detected) {
-//                    current_position = new_position;
-//                    new_position = telemetryTfod();
-//                    if (current_position == new_position) {
-//                        counter++;
-//                        telemetry.addLine(" if counter:" + counter);
-//                    } else {
-//                        counter = 0;
-//                        telemetry.addLine("else counter:" + counter);
-//                    }
-//
-//                    telemetry.update();
-//
-//                    if (counter > 10) {
-//                        detected = true;
-//                    }
-//                    sleep(20);
-//
-//                }
+                int current_position = 0;
+                int counter = 0;
+                //insert code to detect object
+                sleep(6000);
+                while (!detected) {
+                    current_position = new_position;
+                    new_position = telemetryTfod();
+                    if (current_position == new_position) {
+                        counter++;
+                        telemetry.addLine(" if counter:" + counter);
+                    } else {
+                        counter = 0;
+                        telemetry.addLine("else counter:" + counter);
+                    }
+
+                    telemetry.update();
+
+                    if (counter > 10) {
+                        detected = true;
+                    }
+                    sleep(20);
+
+                }
                 if (new_position == 1) {
 
 
                     drive.followTrajectory(leftTraj1);
                     arm.setPosition(ARM_BOTTOM_POSITION - 0.1);
                     sleep(200);
+
+
                     leftSlide.setPower(-0.5);
-                    leftSlide.setPower(-0.5);
+                    rightSlide.setPower(-0.5);
+
+                    t = getRuntime();
+
+                    while (t > getRuntime() - 1.5);
+
+                    leftSlide.setPower(0);
+                    rightSlide.setPower(0);
+
+                    arm.setPosition(ARM_BOTTOM_POSITION - 0.05);
 
                     drive.followTrajectory(leftTraj2);
 
-                    leftSlide.setPower(0);
-                    leftSlide.setPower(0);
                     arm.setPosition(ARM_BOTTOM_POSITION);
                     sleep(500);
                     rightClaw.setPosition(RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
@@ -247,6 +280,8 @@ public class AutonCloseBlueRR extends LinearOpMode {
                     sleep(500);
 
                     drive.followTrajectory(leftTraj5);
+                    drive.followTrajectory(leftTraj6);
+                    drive.followTrajectory(leftTraj7);
 
                 } else if (new_position == 2) {
 
@@ -254,12 +289,19 @@ public class AutonCloseBlueRR extends LinearOpMode {
                     arm.setPosition(ARM_BOTTOM_POSITION - 0.1);
                     sleep(200);
                     leftSlide.setPower(-0.5);
-                    leftSlide.setPower(-0.5);
+                    rightSlide.setPower(-0.5);
+
+                    t = getRuntime();
+
+                    while (t > getRuntime() - 1.5);
+
+                    leftSlide.setPower(0);
+                    rightSlide.setPower(0);
+
+                    arm.setPosition(ARM_BOTTOM_POSITION - 0.05);
 
                     drive.followTrajectory(centerTraj2);
 
-                    leftSlide.setPower(0);
-                    leftSlide.setPower(0);
                     arm.setPosition(ARM_BOTTOM_POSITION);
                     sleep(500);
                     rightClaw.setPosition(RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
@@ -273,18 +315,27 @@ public class AutonCloseBlueRR extends LinearOpMode {
                     sleep(500);
 
                     drive.followTrajectory(centerTraj5);
+                    drive.followTrajectory(centerTraj6);
+                    drive.followTrajectory(centerTraj7);
 
                 } else if (new_position == 3) {
                     drive.followTrajectory(rightTraj1);
                     arm.setPosition(ARM_BOTTOM_POSITION - 0.1);
                     sleep(200);
                     leftSlide.setPower(-0.5);
-                    leftSlide.setPower(-0.5);
+                    rightSlide.setPower(-0.5);
+
+                    t = getRuntime();
+
+                    while (t > getRuntime() - 1.5);
+
+                    leftSlide.setPower(0);
+                    rightSlide.setPower(0);
+
+                    arm.setPosition(ARM_BOTTOM_POSITION - 0.05);
 
                     drive.followTrajectory(rightTraj2);
 
-                    leftSlide.setPower(0);
-                    leftSlide.setPower(0);
                     arm.setPosition(ARM_BOTTOM_POSITION);
                     sleep(500);
                     rightClaw.setPosition(RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
@@ -298,6 +349,8 @@ public class AutonCloseBlueRR extends LinearOpMode {
                     sleep(500);
 
                     drive.followTrajectory(rightTraj5);
+                    drive.followTrajectory(rightTraj6);
+                    drive.followTrajectory(rightTraj7);
                 }
             } catch (Exception e) {
                 telemetry.addData("Error:", e.toString());
@@ -319,7 +372,7 @@ public class AutonCloseBlueRR extends LinearOpMode {
             //telemetry.addData("objects", currentRecognitions.size());
             //telemetry.update();
             if (currentRecognitions.size() > 0) {
-                if (recognition.getRight() - recognition.getLeft() < 120) {
+                if (recognition.getRight() - recognition.getLeft() < 180) {
                     if (x > 0 && x < 190) {
                         position = 1;
                         //telemetry.addLine("left:" + position);
@@ -333,12 +386,13 @@ public class AutonCloseBlueRR extends LinearOpMode {
             }
 
 
-            telemetry.addData(""," ");
+            telemetry.addData("Position",position);
             telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
             telemetry.addData("- Position", "%.0f / %.0f", x, y);
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
         }   // end for() loop
         telemetry.addData("hi",position);
+        telemetry.addData("Uploaded", position);
         return position;
     }   // end method telemetryTfod()
 }
