@@ -23,10 +23,10 @@ public class CenterStageManualV4 extends LinearOpMode {
     static final double RIGHT_CLAW_INITIAL_POSITION = 0.425;
     static final double CLAW_RETRACT_DIFF = 0.15;
 
-    static final double ARM_BOTTOM_POSITION = 0.74;
-    static final double ARM_TOP_POSITION = 0.15;
+    static final double ARM_BOTTOM_POSITION = 0.61;
+    static final double ARM_TOP_POSITION = 0;
 
-    static final double DRIVE_SPEED = -0.75;
+    static final double DRIVE_SPEED = -1;
 
 
     private final ElapsedTime runtime = new ElapsedTime();
@@ -120,6 +120,7 @@ public class CenterStageManualV4 extends LinearOpMode {
 
         double driveSensitivity = DRIVE_SPEED;
         boolean arm_up = false;
+        boolean hanging = false;
 
 
         while (opModeIsActive()) {
@@ -171,7 +172,28 @@ public class CenterStageManualV4 extends LinearOpMode {
                 leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
-            if(linearLevel == 0 && leftSlide.getCurrentPosition() <= 300 && rightSlide.getCurrentPosition() <= 300){
+            if(gamepad2.dpad_left){
+                hanging = true;
+            }
+            if(hanging) {
+                leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                leftSlide.setPower(0);
+                rightSlide.setPower(0);
+                if (gamepad2.right_trigger > 0.5) {
+                    leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    leftSlide.setPower(LEFT_LINEAR_SLIDE_POWER);
+                    rightSlide.setPower(LEFT_LINEAR_SLIDE_POWER);
+                }
+                if (gamepad2.dpad_down) {
+                    leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    leftSlide.setPower(-1 * LEFT_LINEAR_SLIDE_POWER);
+                    rightSlide.setPower(-1 * LEFT_LINEAR_SLIDE_POWER);
+                }
+            }
+            else if(linearLevel == 0 && leftSlide.getCurrentPosition() <= 300 && rightSlide.getCurrentPosition() <= 300){
                 leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 leftSlide.setPower(0);
@@ -186,8 +208,10 @@ public class CenterStageManualV4 extends LinearOpMode {
                 }
             }
             else {
-                utilities.linearArmCenterStage(leftSlide, currentPosLeftSlide, LEFT_LINEAR_SLIDE_POWER);
-                utilities.linearArmCenterStage(rightSlide, currentPosRightSlide, LEFT_LINEAR_SLIDE_POWER);
+                if(hanging == false) {
+                    utilities.linearArmCenterStage(leftSlide, currentPosLeftSlide, LEFT_LINEAR_SLIDE_POWER);
+                    utilities.linearArmCenterStage(rightSlide, currentPosRightSlide, LEFT_LINEAR_SLIDE_POWER);
+                }
             }
 
             if (gamepad2.a) {
@@ -198,7 +222,6 @@ public class CenterStageManualV4 extends LinearOpMode {
                 leftClaw.setPosition(LEFT_CLAW_INITIAL_POSITION + CLAW_RETRACT_DIFF);
                 rightClaw.setPosition(RIGHT_CLAW_INITIAL_POSITION - CLAW_RETRACT_DIFF);
             }
-
 
             telemetry.addData("Left Pos", leftSlide.getCurrentPosition());
             telemetry.addData("Right Pos", rightSlide.getCurrentPosition());
@@ -215,7 +238,7 @@ public class CenterStageManualV4 extends LinearOpMode {
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral =  gamepad1.left_stick_x;
-            double yaw     =  -gamepad1.right_stick_x * 0.6;
+            double yaw     =  -gamepad1.right_stick_x * 0.5;
 
             if (gamepad1.left_bumper) {
                 leftBumper1 = true;
@@ -225,15 +248,6 @@ public class CenterStageManualV4 extends LinearOpMode {
                 driveSensitivity *= -1;
 
                 leftBumper1 = false;
-            }
-            if (gamepad1.right_bumper) {
-                rightBumper1 = true;
-            }
-            if (rightBumper1 && !gamepad1.right_bumper) {
-                driveSensitivity *= 0.66;
-
-                rightBumper1 = false;
-
             }
 
 
